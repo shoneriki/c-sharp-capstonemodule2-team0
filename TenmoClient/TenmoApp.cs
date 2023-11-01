@@ -47,6 +47,7 @@ namespace TenmoClient
                 {
                     // Log in
                     Login();
+                    
                     return true;    // Keep the main menu loop going
                 }
 
@@ -73,6 +74,7 @@ namespace TenmoClient
 
             if (menuSelection == 1)
             {
+               
                 // View your current balance
             }
 
@@ -124,6 +126,7 @@ namespace TenmoClient
                 else
                 {
                     console.PrintSuccess("You are now logged in");
+                    
                 }
             }
             catch (Exception)

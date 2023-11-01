@@ -6,6 +6,7 @@ namespace TenmoClient.Services
 {
     public class TenmoConsoleService : ConsoleService
     {
+
         /************************************************************
             Print methods
         ************************************************************/
@@ -52,6 +53,11 @@ namespace TenmoClient.Services
         }
 
         // Add application-specific UI methods here...
+        //public void ViewBalance(double balance)
+        //{
+
+        //    Console.WriteLine($"Your current account balance is: ${balance}");
+        //}
 
 
     }
