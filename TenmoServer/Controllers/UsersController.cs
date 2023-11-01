@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using TenmoServer.DAO;
 using TenmoServer.Exceptions;
@@ -7,6 +8,7 @@ using TenmoServer.Security;
 
 namespace TenmoServer.Controllers 
 {
+    [Authorize]
     [Route("users")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -18,14 +20,21 @@ namespace TenmoServer.Controllers
             this.userDao = userDao;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet()]
+
+        public IList<User> ListUsers()
+        {
+            return userDao.GetUsers();
+        }
+
+        [HttpGet("{userId}")]
 
         public ActionResult<User> GetUser(int userId)
         {
             User user = userDao.GetUserById(userId);
 
             if (user != null)
-            {
+            { 
                 return user;
             }
             else
