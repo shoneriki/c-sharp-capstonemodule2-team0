@@ -6,6 +6,7 @@ namespace TenmoClient.Services
 {
     public class TenmoConsoleService : ConsoleService
     {
+
         /************************************************************
             Print methods
         ************************************************************/
@@ -52,7 +53,7 @@ namespace TenmoClient.Services
         }
 
         // Add application-specific UI methods here...
-        
+
 
     }
 }
