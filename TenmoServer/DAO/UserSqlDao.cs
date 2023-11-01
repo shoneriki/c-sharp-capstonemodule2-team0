@@ -150,6 +150,36 @@ namespace TenmoServer.DAO
             return newUser;
         }
 
+
+        public decimal GetBalanceById(int user_id)
+        {
+            decimal balance = 0;
+            string sql = "SELECT balance FROM account " +
+                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id" +
+                "WHERE user_id = @user_id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@user_id", user_id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        balance = Convert.ToInt32("balance");
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("Error in fetching account balance", ex);
+            };
+            return balance;
+        }
         private User MapRowToUser(SqlDataReader reader)
         {
             User user = new User();
@@ -159,5 +189,6 @@ namespace TenmoServer.DAO
             user.Salt = Convert.ToString(reader["salt"]);
             return user;
         }
+
     }
 }
