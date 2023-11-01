@@ -14,7 +14,7 @@ namespace TenmoClient.Services
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine("Welcome to TEnmo!");
+            Console.WriteLine("Welcome to Tenmo!");
             Console.WriteLine("1: Login");
             Console.WriteLine("2: Register");
             Console.WriteLine("0: Exit");
