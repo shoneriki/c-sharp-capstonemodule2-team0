@@ -18,7 +18,7 @@ namespace TenmoServer.DAO
             connectionString = dbConnectionString;
         }
 
-        public decimal GetBalanceById(int user_id)
+        public decimal GetBalanceByUserId(int user_id)
         {
             decimal balance = 0;
             string sql = "SELECT balance FROM account " +

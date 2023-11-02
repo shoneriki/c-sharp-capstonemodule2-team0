@@ -31,7 +31,7 @@ namespace TenmoServer.Controllers
             {
                 return NotFound();
             }
-           accountDao.GetBalanceByUserId(userId)
+            accountDao.GetBalanceByUserId(userId);
         }
 
 
