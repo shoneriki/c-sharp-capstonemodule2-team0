@@ -12,29 +12,16 @@ namespace TenmoServer.Controllers
     [Authorize]
     [Route("accounts")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IUserDao userDao;
         private readonly IAccountDao accountDao;
 
-        public AccountController(IUserDao userDao, IAccountDao accountDao)
+        public AccountsController(IUserDao userDao, IAccountDao accountDao)
         {
             this.userDao = userDao;
             this.accountDao = accountDao;
         }
-
-<<<<<<< HEAD
-        //[HttpGet("/user/{userId}/account")]
-
-        //public ActionResult<List<Account>> ListAccountsByUserId(int id)
-        //{
-        //    User user = userDao.GetUserById(id);
-        //    if(user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return accountDao.GetAccountById(id);
-        //}
 
         [HttpGet("{account_id}")]
         public ActionResult<Account> GetAccount(int account_id)
@@ -49,20 +36,6 @@ namespace TenmoServer.Controllers
                 return NotFound();
             }
         }
-=======
-        //[HttpGet("/users/{userId}/accounts")]
-
-        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
-        //{
-        //    User user = userDao.GetUserById(userId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    accountDao.GetBalanceByUserId(userId);
-        //}
->>>>>>> 7ba8ad4165d838718fc1191bf3cd2c2c1750a8c1
-
         [HttpGet("/balance")]
         public decimal GetBalanceById(int id)
         {
