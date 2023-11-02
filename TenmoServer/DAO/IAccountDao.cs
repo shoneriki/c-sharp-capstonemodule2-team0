@@ -9,5 +9,6 @@ namespace TenmoServer.DAO
         Account GetAccountById(int account_id);
         bool TransferMoney(int accountId, decimal amount);
         bool ReceiveMoney(int accountId, decimal amount);
+        public IList<Account> GetAccounts();
     }
 }

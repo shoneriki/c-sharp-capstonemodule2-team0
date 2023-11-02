@@ -77,6 +77,36 @@ namespace TenmoServer.DAO
             return account;
         }
 
+        public IList<Account> GetAccounts()
+        {
+            IList<Account> accounts = new List<Account>();
+
+            string sql = "SELECT * FROM account";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Account account = MapRowToAccount(reader);
+                        accounts.Add(account);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception occurred", ex);
+            }
+
+            return accounts;
+        }
+
 
         // account stuff?
         public bool TransferMoney(int accountId, decimal amount)
