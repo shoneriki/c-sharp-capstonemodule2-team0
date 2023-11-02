@@ -3,7 +3,7 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
-    public interface ITransferStatus
+    public interface ITransferStatusDao
     {
         // TODO: display status of 
     }
