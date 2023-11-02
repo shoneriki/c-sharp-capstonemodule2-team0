@@ -23,6 +23,7 @@ namespace TenmoServer.Controllers
             this.accountDao = accountDao;
         }
 
+<<<<<<< HEAD
         //[HttpGet("/user/{userId}/account")]
 
         //public ActionResult<List<Account>> ListAccountsByUserId(int id)
@@ -48,6 +49,19 @@ namespace TenmoServer.Controllers
                 return NotFound();
             }
         }
+=======
+        //[HttpGet("/users/{userId}/accounts")]
+
+        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
+        //{
+        //    User user = userDao.GetUserById(userId);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    accountDao.GetBalanceByUserId(userId);
+        //}
+>>>>>>> 7ba8ad4165d838718fc1191bf3cd2c2c1750a8c1
 
         [HttpGet("/balance")]
         public decimal GetBalanceById(int id)
