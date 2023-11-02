@@ -13,7 +13,7 @@ namespace TenmoClient.Services
 
         // Add methods to call api here...
 
-        public static IRestClient client = null;
+        //public static IRestClient client = null;
         private static Account user = new Account();
 
         public int Id
@@ -42,9 +42,9 @@ namespace TenmoClient.Services
 
         // tenmoApiService
 
-        public Account GetAccountInfo(Account userId)
+        public Account GetBalance(Account userId)
         {
-            RestRequest request = new RestRequest($"users/{userId}/account");
+            RestRequest request = new RestRequest($"users/{userId}/balance");
             IRestResponse<Account> response = client.Get<Account>(request);
 
             CheckForError(response);
@@ -57,15 +57,33 @@ namespace TenmoClient.Services
          * request to see list of users
          */
 
-        public List<Account> GeAccounts()
+        //public List<Account> GetAccounts(Account userId)
+        //{
+        //    RestRequest request = new RestRequest($"users/{userId}/");
+        //    IRestResponse<List<Account>> response = client.Get<List<Account>>(request);
+
+        //    CheckForError(response);
+        //    return response.Data;
+        //}
+
+        public List<Transfer> GetTranferSend(Account userId)
         {
-            RestRequest request = new RestRequest("users/account");
-            IRestResponse<List<Account>> response = client.Get<List<Account>>(request);
+            RestRequest request = new RestRequest($"users/{userId}/send_money");
+            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
             CheckForError(response);
             return response.Data;
         }
 
-        public 
+        public List<Transfer> GetTranferRequest(Account userId)
+        {
+            RestRequest request = new RestRequest($"users/{userId}/recieve_money");
+            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+
     }
 }
