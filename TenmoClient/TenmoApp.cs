@@ -74,7 +74,7 @@ namespace TenmoClient
 
             if (menuSelection == 1)
             {
-               
+                ShowBalance();
                 // View your current balance
             }
 
@@ -162,6 +162,18 @@ namespace TenmoClient
             console.Pause();
         }
 
+        private void ShowBalance()
+        {
+            try
+            { 
+                Console.WriteLine($"Your current account balance is: {tenmoApiService.GetBalance()}");
+            }
+            catch (Exception)
+            {
+                console.PrintError("Can not display balance at this time. ");
+            }
+            console.Pause();
+        }
 
     }
 }
