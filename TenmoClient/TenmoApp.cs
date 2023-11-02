@@ -91,6 +91,7 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                console.ListOfUsers(tenmoApiService.GetUsers());
             }
 
             if (menuSelection == 5)

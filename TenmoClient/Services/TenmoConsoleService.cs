@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using TenmoClient.Models;
 
 namespace TenmoClient.Services
@@ -53,18 +54,12 @@ namespace TenmoClient.Services
         }
 
         // Add application-specific UI methods here...
-        public void PrintBalance()
+        public void ListOfUsers(List<ApiUser> apiUsers)
         {
-            ApiUser currentUser = new ApiUser();
-            Account user = new Account();
-            if (currentUser.UserId == user.Id)
+            foreach (ApiUser element in apiUsers)
             {
-                Console.WriteLine($"Your current account balance is: {user.Balance}");
-            }
-            else
-            {
-                Console.WriteLine("An issue has occured");
-                Console.ReadLine();
+                Console.WriteLine($"{element.UserId} / {element.Username}");
+                Pause();
             }
         }
 
