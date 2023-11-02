@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using TenmoClient.Models;
 
 namespace TenmoClient.Services
@@ -52,20 +53,19 @@ namespace TenmoClient.Services
             return loginUser;
         }
 
+        //create promptfortransfer including logic for send and request include listOfUser
+
         // Add application-specific UI methods here...
-        public void PrintBalance()
+        public void ListOfUsers(List<ApiUser> apiUsers)
         {
-            ApiUser currentUser = new ApiUser();
-            Account user = new Account();
-            if (currentUser.UserId == user.Id)
+            
+            foreach (ApiUser element in apiUsers)
             {
-                Console.WriteLine($"Your current account balance is: {user.Balance}");
+
+                Console.WriteLine($"{element.UserId} / {element.Username}");
+
             }
-            else
-            {
-                Console.WriteLine("An issue has occured");
-                Console.ReadLine();
-            }
+            Pause();
         }
 
         //publi
