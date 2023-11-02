@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using TenmoServer.DAO;
 using TenmoServer.Exceptions;
 using TenmoServer.Models;
@@ -22,20 +23,61 @@ namespace TenmoServer.Controllers
             this.accountDao = accountDao;
         }
 
-        //[HttpGet("/users/{userId}/accounts")]
+        [HttpGet("{account_id}")]
+        public ActionResult<Account> GetAccount(int account_id)
+        {
+            Account account = accountDao.GetAccountById(account_id);
+            if(account != null)
+            {
+                return account;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
-        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
-        //{
-        //    User user = userDao.GetUserById(userId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    accountDao.GetBalanceByUserId(userId);
-        //}
+        [HttpGet("/balance")]
+        public decimal GetBalanceById(int id)
+        {
+            decimal balance = accountDao.GetBalanceByUserId(id);
+            if(balance != 0)
+            {
+                return balance;
+            }
+            else
+            {
+                return 0.0M;
+            }
+        }
 
+        [HttpPut("/balance")]
+        public bool UpdateBalanceByGiving(int accountId, decimal amount)
+        {
+            try
+            {
+                bool giving = accountDao.TransferMoney(accountId, amount);
+                return giving;
+            }
+            catch (DaoException)
+            {
+                throw new DaoException("Unacceptable command");
+            }
+        }
 
-
+        [HttpPut("/balance")]
+        public bool UpdateBalanceByTaking(int accountId, decimal amount)
+        {
+            try
+            {
+                bool taking = accountDao.TransferMoney(accountId, amount);
+                return taking;
+            }
+            catch (DaoException)
+            {
+                throw new DaoException("Unacceptable command");
+            }
+        }
 
 
     }
