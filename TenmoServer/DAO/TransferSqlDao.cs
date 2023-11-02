@@ -90,7 +90,7 @@ namespace TenmoServer.DAO
         {
             List<Transfer> transfers = new List<Transfer>();
             string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
-                "transfer.amount, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
+                "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
                 "tenmo_user.username, account.balance " +
                 "FROM transfer " +
                 "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
