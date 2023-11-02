@@ -18,12 +18,12 @@ namespace TenmoServer.DAO
             connectionString = dbConnectionString;
         }
 
-        public decimal GetBalanceById(int user_id)
+        public decimal GetBalanceByUserId(int user_id)
         {
             decimal balance = 0;
             string sql = "SELECT balance FROM account " +
-                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id" +
-                "WHERE user_id = @user_id";
+                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
+                "WHERE tenmo_uuser_id = @user_id";
 
             try
             {
@@ -36,7 +36,7 @@ namespace TenmoServer.DAO
 
                     if (reader.Read())
                     {
-                        balance = Convert.ToInt32("balance");
+                        balance = Convert.ToDecimal("balance");
                     }
 
                 }
@@ -47,9 +47,5 @@ namespace TenmoServer.DAO
             };
             return balance;
         }
-
-
-
-
     }
 }
