@@ -28,23 +28,23 @@ namespace TenmoServer.Controllers
         {
             User user = userDao.GetUserById(user_id);
             if (user == null)
-        {
+            {
                 return NotFound();
             }
             return accountDao.GetAccountByUserId(user_id);
         }
 
-        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
-        //{
-        //    User user = userDao.GetUserById(userId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    accountDao.GetBalanceByUserId(userId);
-        //}
-                return balance;
-            }
+        [HttpGet("users/{user_id}/accounts")]
+        public decimal GetBalanceById(int user_id)
+        {
+            decimal balance = accountDao.GetBalanceByUserId(user_id);
+            //}
+            //else
+            //{
+            //    return 0.0M;
+            //}
+            return balance;
+        }
 
         [HttpPut("/balance")]
         public bool UpdateBalanceByGiving(int accountId, decimal amount)
