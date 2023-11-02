@@ -41,15 +41,22 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("/users/{user_id}/transfers")]
-        public ActionResult<List<Transfer>> GetTransferByUser(int userId)
+        [HttpGet("users")]
+        public IList<User> GetUsersForTransfer()
+        {      
+            return userDao.GetUsers();
+        }
+
+        [HttpGet("users/{user_id}")]
+        public ActionResult<List<Transfer>> ListTransfersOfUser(int user_id)
         {
-            User user = userDao.GetUserById(userId);
-            if(user == null)
+            User user = userDao.GetUserById(user_id);
+            if (user == null)
             {
                 return NotFound();
             }
-            return TransferDao.GetTransfersOfUser(userId);
+            return TransferDao.GetTransfersOfUser(user_id);
         }
+
     }
 }
