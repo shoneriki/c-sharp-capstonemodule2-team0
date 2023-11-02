@@ -22,17 +22,21 @@ namespace TenmoServer.Controllers
             this.accountDao = accountDao;
         }
 
-        [HttpGet("/users/{userId}/accounts")]
+        //[HttpGet("{userId}")]
 
-        public ActionResult<List<Account>> ListAccountsByUser(int userId)
-        {
-            User user = userDao.GetUserById(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-           accountDao.GetBalanceByUserId(userId)
-        }
+        //public ActionResult<Account> ListAccountsByBalance(int id)
+        //{
+        //    Account account = accountDao.GetBalanceByUserId(id);
+        //    if (account != null)
+        //    {
+        //        return account;
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+            
+        //}
 
 
 
