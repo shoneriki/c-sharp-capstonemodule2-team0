@@ -8,7 +8,7 @@ using TenmoServer.Security.Models;
 
 namespace TenmoServer.DAO
 {
-    public class TransferSqlDao
+    public class TransferSqlDao : ITransferDao
     {
         private readonly string connectionString;
 
@@ -122,7 +122,7 @@ namespace TenmoServer.DAO
             return transfers;
         }
 
-        private bool TransferMoney(int accountId, decimal amount)
+        public bool TransferMoney(int accountId, decimal amount)
         {
             string sql = "UPDATE account SET balance = balance - @amount " +
                 "WHERE account_id = @accountId AND balance >= @amount";
@@ -151,7 +151,7 @@ namespace TenmoServer.DAO
             }
         }
 
-        private bool ReceiveMoney(int accountId, decimal amount)
+        public bool ReceiveMoney(int accountId, decimal amount)
         {
             string sql = "UPDATE account SET balance = balance + @amount " +
                 "WHERE account_id = @accountId";

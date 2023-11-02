@@ -23,7 +23,7 @@ namespace TenmoServer.DAO
             decimal balance = 0;
             string sql = "SELECT balance FROM account " +
                 "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-                "WHERE tenmo_uuser_id = @user_id";
+                "WHERE tenmo_user.user_id = @user_id";
 
             try
             {
@@ -36,7 +36,7 @@ namespace TenmoServer.DAO
 
                     if (reader.Read())
                     {
-                        balance = Convert.ToDecimal("balance");
+                        balance = Convert.ToDecimal(reader["balance"]);
                     }
 
                 }

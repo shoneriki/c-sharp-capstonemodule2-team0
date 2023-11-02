@@ -2,7 +2,7 @@
 {
     public class TransferType
     {
-        //public int TransferTypeId { get; set; }
+        public int TransferTypeId { get; set; }
         public string TransferTypeDesc { get; set; }
     }
 }

@@ -5,6 +5,9 @@ namespace TenmoServer.DAO
 {
     public interface ITransferStatusDao
     {
-        // TODO: display status of 
+        // TODO: display all of the transfer statuses
+        List<TransferStatus> GetTransferStatuses();
+        // TODO: get transfer status by id
+        TransferStatus GetTransferStatusById(int statusId);
     }
 }
