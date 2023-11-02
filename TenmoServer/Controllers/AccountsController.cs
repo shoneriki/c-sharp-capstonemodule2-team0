@@ -34,7 +34,7 @@ namespace TenmoServer.Controllers
         public ActionResult<Account> GetAccount(int user_id)
         {
             User user = userDao.GetUserById(user_id);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
