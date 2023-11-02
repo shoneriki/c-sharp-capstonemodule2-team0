@@ -14,9 +14,9 @@ namespace TenmoServer.DAO
 
         // TODO: TransferMoney (give money aka lose money and balance decreases)
         //public decimal TransferMoneyToUser(decimal money);
-        bool TransferMoney(int accountId, decimal amount);
+        //bool TransferMoney(int accountId, decimal amount);
         // TODO: ReceiveMoney (get money aka receive money and balance increases)
         //public decimal GettingMoneyFromUser(decimal money);
-        bool ReceiveMoney(int accountId, decimal amount);
+        //bool ReceiveMoney(int accountId, decimal amount);
     }
 }
