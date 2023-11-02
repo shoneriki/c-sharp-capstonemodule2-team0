@@ -53,14 +53,19 @@ namespace TenmoClient.Services
             return loginUser;
         }
 
+        //create promptfortransfer including logic for send and request include listOfUser
+
         // Add application-specific UI methods here...
         public void ListOfUsers(List<ApiUser> apiUsers)
         {
+            
             foreach (ApiUser element in apiUsers)
             {
+
                 Console.WriteLine($"{element.UserId} / {element.Username}");
-                Pause();
+
             }
+            Pause();
         }
 
         //publi

@@ -74,8 +74,8 @@ namespace TenmoClient
 
             if (menuSelection == 1)
             {
-                ShowBalance();
                 // View your current balance
+                ShowBalance();
             }
 
             if (menuSelection == 2)
@@ -91,12 +91,13 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
-                console.ListOfUsers(tenmoApiService.GetUsers());
+                console.ListOfUsers(tenmoApiService.GetUser());
             }
 
             if (menuSelection == 5)
             {
                 // Request TE bucks
+                console.ListOfUsers(tenmoApiService.GetUser());
             }
 
             if (menuSelection == 6)

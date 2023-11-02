@@ -43,20 +43,20 @@ namespace TenmoClient.Services
             return account.Balance;
         }
 
-        public List<ApiUser> GetAccountListForTransfer(int userId)
+        public List<ApiUser> GetUser()
         {
-            RestRequest request = new RestRequest("transfer/users");
+            RestRequest request = new RestRequest("users");
             IRestResponse<List<ApiUser>> response = client.Get<List<ApiUser>>(request);
 
             CheckForError(response);
             return response.Data;
         }
 
-        public List<ApiUser> GetUsers()
-        {
-            List<ApiUser> userList = GetAccountListForTransfer(UserId);
-            return userList;
-        }
+        //public List<ApiUser> GetUsers()
+        //{
+        //    List<ApiUser> userList = GetAccountListForTransfer(userList.UserId);
+        //    return userList;
+        //}
 
         public List<Transfer> GetAccountsRequest(Account userId)
         {
