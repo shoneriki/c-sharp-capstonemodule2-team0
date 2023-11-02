@@ -12,44 +12,39 @@ namespace TenmoServer.Controllers
     [Authorize]
     [Route("accounts")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IUserDao userDao;
         private readonly IAccountDao accountDao;
 
-        public AccountController(IUserDao userDao, IAccountDao accountDao)
+        public AccountsController(IUserDao userDao1, IAccountDao accountDao1)
         {
-            this.userDao = userDao;
-            this.accountDao = accountDao;
+            userDao = userDao1;
+            accountDao = accountDao1;
         }
 
-        [HttpGet("{account_id}")]
-        public ActionResult<Account> GetAccount(int account_id)
+        [HttpGet("/users/{user_id}/accounts")]
+        public ActionResult<Account> GetAccount(int user_id)
         {
-            Account account = accountDao.GetAccountById(account_id);
-            if(account != null)
-            {
-                return account;
-            }
-            else
-            {
+            User user = userDao.GetUserById(user_id);
+            if (user == null)
+        {
                 return NotFound();
             }
+            return accountDao.GetAccountByUserId(user_id);
         }
 
-        [HttpGet("/balance")]
-        public decimal GetBalanceById(int id)
-        {
-            decimal balance = accountDao.GetBalanceByUserId(id);
-            if(balance != 0)
-            {
+        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
+        //{
+        //    User user = userDao.GetUserById(userId);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    accountDao.GetBalanceByUserId(userId);
+        //}
                 return balance;
             }
-            else
-            {
-                return 0.0M;
-            }
-        }
 
         [HttpPut("/balance")]
         public bool UpdateBalanceByGiving(int accountId, decimal amount)
