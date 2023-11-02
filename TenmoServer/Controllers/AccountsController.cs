@@ -25,16 +25,33 @@ namespace TenmoServer.Controllers
 
         //[HttpGet("/accounts")]
 
-        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
+        //public List<Account> ListAccounts()
         //{
-        //    User user = userDao.GetUserById(userId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    accountDao.GetBalanceByUserId(userId);
+        //    return accountDao.GetAccounts();
         //}
 
+        [HttpGet("/users/{user_id}/accounts")]
+        public ActionResult<Account> GetAccount(int user_id)
+        {
+            User user = userDao.GetUserById(user_id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return accountDao.GetAccountByUserId(user_id);
+        }
+
+        [HttpGet("users/{user_id}/accounts")]
+        public decimal GetBalanceById(int user_id)
+        {
+            decimal balance = accountDao.GetBalanceByUserId(user_id);
+            //}
+            //else
+            //{
+            //    return 0.0M;
+            //}
+            return balance;
+        }
 
         [HttpPut("/balance")]
         public bool UpdateBalanceByGiving(int accountId, decimal amount)

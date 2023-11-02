@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
 using System.Collections.Generic;
 using TenmoServer.DAO;
 using TenmoServer.Models;
-=======
->>>>>>> ea6eba8d77445755e06739b926057b6a4501780e
 
 namespace TenmoServer.Controllers
 {
     [Authorize]
     [Route("transfer")]
     [ApiController]
-<<<<<<< HEAD
     public class TransfersController : ControllerBase
     {
         private ITransferDao TransferDao;
@@ -55,10 +51,5 @@ namespace TenmoServer.Controllers
             }
             return TransferDao.GetTransfersOfUser(userId);
         }
-=======
-    public class TransferController : ControllerBase
-    {
-        //private ITransferDao transferDao;
->>>>>>> ea6eba8d77445755e06739b926057b6a4501780e
     }
 }
