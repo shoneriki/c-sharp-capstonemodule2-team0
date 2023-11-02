@@ -12,69 +12,45 @@ namespace TenmoServer.Controllers
     [Authorize]
     [Route("accounts")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IUserDao userDao;
         private readonly IAccountDao accountDao;
 
-        public AccountController(IUserDao userDao, IAccountDao accountDao)
+        public AccountsController(IUserDao userDao1, IAccountDao accountDao1)
         {
-            this.userDao = userDao;
-            this.accountDao = accountDao;
+            userDao = userDao1;
+            accountDao = accountDao1;
         }
 
-<<<<<<< HEAD
-        //[HttpGet("/user/{userId}/account")]
+        //[HttpGet("/accounts")]
 
-        //public ActionResult<List<Account>> ListAccountsByUserId(int id)
+        //public List<Account> ListAccounts()
         //{
-        //    User user = userDao.GetUserById(id);
-        //    if(user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return accountDao.GetAccountById(id);
+        //    return accountDao.GetAccounts();
         //}
 
-        [HttpGet("{account_id}")]
-        public ActionResult<Account> GetAccount(int account_id)
+        [HttpGet("/users/{user_id}/accounts")]
+        public ActionResult<Account> GetAccount(int user_id)
         {
-            Account account = accountDao.GetAccountById(account_id);
-            if(account != null)
-            {
-                return account;
-            }
-            else
+            User user = userDao.GetUserById(user_id);
+            if(user == null)
             {
                 return NotFound();
             }
+            return accountDao.GetAccountByUserId(user_id);
         }
-=======
-        //[HttpGet("/users/{userId}/accounts")]
 
-        //public ActionResult<List<Account>> ListAccountsByUser(int userId)
-        //{
-        //    User user = userDao.GetUserById(userId);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    accountDao.GetBalanceByUserId(userId);
-        //}
->>>>>>> 7ba8ad4165d838718fc1191bf3cd2c2c1750a8c1
-
-        [HttpGet("/balance")]
-        public decimal GetBalanceById(int id)
+        [HttpGet("users/{user_id}/accounts")]
+        public decimal GetBalanceById(int user_id)
         {
-            decimal balance = accountDao.GetBalanceByUserId(id);
-            if(balance != 0)
-            {
-                return balance;
-            }
-            else
-            {
-                return 0.0M;
-            }
+            decimal balance = accountDao.GetBalanceByUserId(user_id);
+            //}
+            //else
+            //{
+            //    return 0.0M;
+            //}
+            return balance;
         }
 
         [HttpPut("/balance")]
