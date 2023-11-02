@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Dynamic;
 using TenmoServer.Exceptions;
 using TenmoServer.Models;
 using TenmoServer.Security;
@@ -17,6 +18,67 @@ namespace TenmoServer.DAO
         {
             connectionString = dbConnectionString;
         }
+
+        //get account by userId
+
+        public Account GetAccountByUserId(int user_id)
+        {
+            Account account = null;
+            string sql = "SELECT * FROM account " +
+                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
+                "WHERE tenmo_user.user_id = @user_id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@user_id", user_id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        account = MapRowToAccount(reader);
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SqlException on GetAccountByUserId",ex);
+            }
+            return account;
+        }
+        public Account GetAccountByAccountId(int account_id)
+        {
+            Account account = null;
+            string sql = "SELECT * FROM account " +
+                "WHERE account.account_id = @account_id";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@account_id", account_id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        account = MapRowToAccount(reader);
+                    }
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SqlException on GetAccountByUserId", ex);
+            }
+            return account;
+        }
+
+
+        //
 
         public decimal GetBalanceByUserId(int user_id)
         {
@@ -76,6 +138,36 @@ namespace TenmoServer.DAO
             };
             return account;
         }
+
+        //public List<Account> GetAccounts()
+        //{
+        //    List<Account> accounts = new List<Account>();
+
+        //    string sql = "SELECT * FROM account";
+
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
+
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            SqlDataReader reader = cmd.ExecuteReader();
+
+        //            while (reader.Read())
+        //            {
+        //                Account account = MapRowToAccount(reader);
+        //                accounts.Add(account);
+        //            }
+        //        }
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new DaoException("SQL exception occurred", ex);
+        //    }
+
+        //    return accounts;
+        //}
 
 
         // account stuff?
