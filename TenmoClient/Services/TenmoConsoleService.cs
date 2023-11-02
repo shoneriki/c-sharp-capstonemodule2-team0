@@ -14,7 +14,7 @@ namespace TenmoClient.Services
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine("Welcome to TEnmo!");
+            Console.WriteLine("Welcome to Tenmo!");
             Console.WriteLine("1: Login");
             Console.WriteLine("2: Register");
             Console.WriteLine("0: Exit");
@@ -53,8 +53,34 @@ namespace TenmoClient.Services
         }
 
         // Add application-specific UI methods here...
+        public void PrintBalance()
+        {
+            ApiUser currentUser = new ApiUser();
+            Account user = new Account();
+            if (currentUser.UserId == user.Id)
+            {
+                Console.WriteLine($"Your current account balance is: {user.Balance}");
+            }
+            else
+            {
+                Console.WriteLine("An issue has occured");
+            }
+        }
 
-        
+        //TODO: add logic for transfer. remember to add Api request for both. when finished add into app.
+        public Transfer PromptForSendTransfer()
+        {
+            Transfer holder = new Transfer();
+            return holder;
+        }
 
+        public Transfer PromptForRequestTransfer()
+        {
+            Transfer holder = new Transfer();
+            return holder;
+        }
+
+        // TODO: create prompts for viewing past transfers and pending transfer
+        // TODO: Prompt to accept, deny, or wait on transfer request
     }
 }
