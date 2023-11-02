@@ -18,7 +18,6 @@ namespace TenmoServer.DAO
         }
 
         ////// TODO: create transfer
-        ////// need id, from(name!), to (name!), type("Request", "Send"), status("Pending", "Approved", "Rejected")
         public Transfer CreateTransfer(Transfer transfer)
         {
             if (transfer.AccountFrom == transfer.AccountTo)
@@ -85,17 +84,20 @@ namespace TenmoServer.DAO
 
             return transfer;
         }
-
+        // TODO: step 3 needs transfer id, transfer_from name, transfer_to name...  
+        ////// need id, from(name!), to (name!), type("Request", "Send"), status("Pending", "Approved", "Rejected")
         public List<Transfer> GetTransfersOfUser(int userId)
         {
             List<Transfer> transfers = new List<Transfer>();
             string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
-                "transfer.account_from, transfer.account_to, transfer.amount, " +
-                "transfer_type.transfer_type_desc, transfer_status.transfer_status_desc " +
+                "transfer.amount, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
+                "tenmo_user.username, account.balance " +
                 "FROM transfer " +
                 "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
                 "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
-                "WHERE transfer.account_From IN(Select account_id FROM account WHERE user_id = @user_id) " +
+                "JOIN account ON transfer.account_from = account.account_id " +
+                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
+                "WHERE transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
                 "OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
 
             try
@@ -122,63 +124,65 @@ namespace TenmoServer.DAO
             return transfers;
         }
 
-        public bool TransferMoney(int accountId, decimal amount)
-        {
-            string sql = "UPDATE account SET balance = balance - @amount " +
-                "WHERE account_id = @accountId AND balance >= @amount";
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
+        //// account stuff?
+        //public bool TransferMoney(int accountId, decimal amount)
+        //{
+        //    string sql = "UPDATE account SET balance = balance - @amount " +
+        //        "WHERE account_id = @accountId AND balance >= @amount";
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@amount", amount);
-                    cmd.Parameters.AddWithValue("@account_id", accountId);
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            cmd.Parameters.AddWithValue("@amount", amount);
+        //            cmd.Parameters.AddWithValue("@account_id", accountId);
 
-                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
 
-                    if (numberOfRowsAffected == 0)
-                    {
-                        throw new DaoException("Zero rows affected, expected at least one");
-                    }
-                }
-                return true;
-            }
-            catch (SqlException ex)
-            {
-                throw new DaoException("SQL exception occured on TransferMoney", ex);
-            }
-        }
+        //            if (numberOfRowsAffected == 0)
+        //            {
+        //                throw new DaoException("Zero rows affected, expected at least one");
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
+        //    }
+        //}
 
-        public bool ReceiveMoney(int accountId, decimal amount)
-        {
-            string sql = "UPDATE account SET balance = balance + @amount " +
-                "WHERE account_id = @accountId";
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
+        //// account stuff?
+        //public bool ReceiveMoney(int accountId, decimal amount)
+        //{
+        //    string sql = "UPDATE account SET balance = balance + @amount " +
+        //        "WHERE account_id = @accountId";
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
 
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@amount", amount);
-                    cmd.Parameters.AddWithValue("@account_id", accountId);
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            cmd.Parameters.AddWithValue("@amount", amount);
+        //            cmd.Parameters.AddWithValue("@account_id", accountId);
 
-                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
 
-                    if (numberOfRowsAffected == 0)
-                    {
-                        throw new DaoException("Zero rows affected, expected at least one");
-                    }
-                }
-                return true;
-            }
-            catch (SqlException ex)
-            {
-                throw new DaoException("SQL exception occured on TransferMoney", ex);
-            }
-        }
+        //            if (numberOfRowsAffected == 0)
+        //            {
+        //                throw new DaoException("Zero rows affected, expected at least one");
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
+        //    }
+        //}
 
 
         private Transfer MapRowToTransfer(SqlDataReader reader)

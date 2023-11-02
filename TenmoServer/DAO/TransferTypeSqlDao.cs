@@ -41,7 +41,7 @@ namespace TenmoServer.DAO
             }
             catch (SqlException ex)
             {
-                throw new DaoException("Sql exception thrown on GetTransferStatuses", ex);
+                throw new DaoException("Sql exception thrown on GetTransferTypeById", ex);
             }
             return transferTypes;
         }
@@ -69,9 +69,42 @@ namespace TenmoServer.DAO
             }
             catch (SqlException ex)
             {
-                throw new DaoException("SQL error thrown in GetTransferStatusById", ex);
+                throw new DaoException("SQL error thrown in GetTransferTypeById", ex);
             }
             return transferType;
+        }
+
+        //type("Request", "Send")
+        public TransferType UpdateTransferType(TransferType transferType)
+        {
+
+            TransferType updatedTransferType = null;
+            string sql = "UPDATE transfer_type SET transfer_type_id = @transfer_type_id, transfer_type_desc = @transfer_type_desc " +
+                "WHERE transfer_type_id = @transfer_type_id;";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@transfer_type_id", transferType.TransferTypeId);
+                    cmd.Parameters.AddWithValue("@transfer_type_desc", transferType.TransferTypeDesc);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+                    if (numberOfRowsAffected == 0)
+                    {
+                        throw new DaoException("Zero rows affected, expected at least one");
+                    }
+                }
+                updatedTransferType = GetTransferTypeById(transferType.TransferTypeId);
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("Sql exception occured on UpdateTransferType", ex);
+            }
+            return updatedTransferType;
         }
 
         private TransferType MapRowToTransferType(SqlDataReader reader)

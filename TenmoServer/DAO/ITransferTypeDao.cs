@@ -8,7 +8,7 @@ namespace TenmoServer.DAO
         // TODO: display all of the transfer types
         List<TransferType> GetTransferTypes();
         // TODO: get transfer type by id
-        TransferType GetTransferTypeById(int statusId);
+        TransferType GetTransferTypeById(int typeId);
 
     }
 }

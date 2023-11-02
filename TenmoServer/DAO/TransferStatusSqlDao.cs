@@ -74,6 +74,39 @@ namespace TenmoServer.DAO
             return transferStatus;
         }
 
+        //status("Pending", "Approved", "Rejected")
+        public TransferStatus UpdateTransferStatus(TransferStatus transferStatus)
+        {
+
+            TransferStatus updatedTransferStatus = null;
+            string sql = "UPDATE transfer_status SET transfer_status_id = @transfer_status_id, transfer_status_desc = @transfer_status_desc " +
+                "WHERE transfer_status_id = @transfer_status_id;";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@transfer_status_id", transferStatus.TransferStatusId);
+                    cmd.Parameters.AddWithValue("@transfer_status_desc", transferStatus.TransferStatusDesc);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+                    if (numberOfRowsAffected == 0)
+                    {
+                        throw new DaoException("Zero rows affected, expected at least one");
+                    }
+                }
+                updatedTransferStatus = GetTransferStatusById(transferStatus.TransferStatusId);
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("Sql exception occured on UpdateTransferStatus", ex);
+            }
+            return updatedTransferStatus;
+        }
+
         private TransferStatus MapRowToTransferStatus(SqlDataReader reader)
         {
             TransferStatus transferStatus = new TransferStatus();
