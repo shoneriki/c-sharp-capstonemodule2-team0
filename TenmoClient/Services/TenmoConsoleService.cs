@@ -64,8 +64,11 @@ namespace TenmoClient.Services
             else
             {
                 Console.WriteLine("An issue has occured");
+                Console.ReadLine();
             }
         }
+
+        //publi
 
         //TODO: add logic for transfer. remember to add Api request for both. when finished add into app.
         public Transfer PromptForSendTransfer()

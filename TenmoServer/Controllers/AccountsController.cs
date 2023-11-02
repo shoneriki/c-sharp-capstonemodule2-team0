@@ -23,13 +23,6 @@ namespace TenmoServer.Controllers
             accountDao = accountDao1;
         }
 
-        //[HttpGet("/accounts")]
-
-        //public List<Account> ListAccounts()
-        //{
-        //    return accountDao.GetAccounts();
-        //}
-
         [HttpGet("/users/{user_id}/accounts")]
         public ActionResult<Account> GetAccount(int user_id)
         {

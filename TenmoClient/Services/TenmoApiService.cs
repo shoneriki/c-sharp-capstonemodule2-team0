@@ -14,68 +14,45 @@ namespace TenmoClient.Services
         // Add methods to call api here...
 
         //public static IRestClient client = null;
-        private static Account user = new Account();
-
-        public int Id
-        {
-            get
-            {
-                return (user == null) ? 0 : user.Id;
-            }
-        }
-
-        public int AccountId
-        {
-            get
-            {
-                return (user == null) ? 0 : user.AccountId;
-            }
-        }
-
-        public decimal Balance
-        {
-            get
-            {
-                return (user == null) ? 0 : user.Balance;
-            }
-        }
-
-        // tenmoApiService
-
-        public Account GetBalance(Account userId)
-        {
-            RestRequest request = new RestRequest($"users/{userId}/balance");
-            IRestResponse<Account> response = client.Get<Account>(request);
-
-            CheckForError(response);
-            return response.Data;
-        }
-
         /* continue to add api for transfers
          * request transfer detail
          * request transfer view
          * request to see list of users
          */
 
-        //public List<Account> GetAccounts(Account userId)
-        //{
-        //    RestRequest request = new RestRequest($"users/{userId}/");
-        //    IRestResponse<List<Account>> response = client.Get<List<Account>>(request);
-
-        //    CheckForError(response);
-        //    return response.Data;
-        //}
-
-        public List<Transfer> GetTranferSend(Account userId)
+        public List<Account> GetAccounts(Account userId)
         {
-            RestRequest request = new RestRequest($"users/{userId}/send_money");
+            RestRequest request = new RestRequest($"users/{userId}/accounts");
+            IRestResponse<List<Account>> response = client.Get<List<Account>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+        public Account GetUserAccountById(int userId)
+        {
+            RestRequest request = new RestRequest($"users/{userId}/accounts");
+            IRestResponse<Account> response = client.Get<Account>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public decimal GetBalance()
+        {
+            Account account = GetUserAccountById(UserId);
+            return account.Balance;
+        }
+
+        public List<Transfer> GetAccountSend(Account userId)
+        {
+            RestRequest request = new RestRequest($"users/{userId}/accounts");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
             CheckForError(response);
             return response.Data;
         }
 
-        public List<Transfer> GetTranferRequest(Account userId)
+        public List<Transfer> GetAccountsRequest(Account userId)
         {
             RestRequest request = new RestRequest($"users/{userId}/recieve_money");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
