@@ -66,10 +66,10 @@ namespace TenmoClient.Services
         //    return userList;
         //}
 
-        public List<Transfer> GetAccountsRequest(Account userId)
+        public Transfer GetAccountById(Account userId)
         {
-            RestRequest request = new RestRequest($"users/{userId}/recieve_money");
-            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
+            RestRequest request = new RestRequest($"users/{userId}/receive_money");
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
 
             CheckForError(response);
             return response.Data;
@@ -81,12 +81,11 @@ namespace TenmoClient.Services
 
         public Transfer CreateTransfer(Transfer transfer)
         {
-            RestRequest request = new RestRequest("transfer/create");
+            RestRequest request = new RestRequest("transfer");
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Post<Transfer>(request);
 
             CheckForError(response);
-
             //if (response.IsSuccessful)
             //{
             //    decimal updatedBalance = GetBalance();
