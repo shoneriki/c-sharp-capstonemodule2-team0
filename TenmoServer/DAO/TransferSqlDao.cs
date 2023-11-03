@@ -252,6 +252,37 @@ namespace TenmoServer.DAO
         //    }
         //}
 
+        public bool updateBalance(int accountId, decimal balance)
+        {
+
+            string sql = "UPDATE account SET balance = @balance " +
+                "WHERE account_id = @accountId";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@balance", balance);
+                    cmd.Parameters.AddWithValue("@account_id", accountId);
+
+                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+                    if (numberOfRowsAffected == 0)
+                    {
+                        throw new DaoException("Zero rows affected, expected at least one");
+                    }
+                }
+                return true;
+
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception occured on TransferMoney", ex);
+            }
+        }
+
 
         private Transfer MapRowToTransfer(SqlDataReader reader)
         {
