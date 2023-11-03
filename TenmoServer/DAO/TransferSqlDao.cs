@@ -54,7 +54,40 @@ namespace TenmoServer.DAO
             return newTransfer;
         }
 
+        public Transfer UpdateTransfer(Transfer transfer)
+        {
+            Transfer updatedTransfer = null;
+            string sql = "UPDATE transfer SET transfer_type_id = @transfer_type_id, transfer_status_id = @transfer_status_id, " +
+                "account_from = @account_from, account_to = @account_to, amount = @amount " +
+                "WHERE transfer_id = @transfer_id";
 
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                    cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                    cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                    cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+                    cmd.Parameters.AddWithValue("@amount", transfer.Amount);
+
+                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+                    if (numberOfRowsAffected == 0)
+                    {
+                        throw new DaoException("Zero rows affected, expected at least one");
+                    }
+
+                }
+                updatedTransfer = GetTransferById(transfer.TransferId);
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("Sql exception occured in UpdateTransfer", ex);
+            }
+            return updatedTransfer;
+        }
         public Transfer GetTransferById(int transferId)
         {
             Transfer transfer = null;
@@ -124,7 +157,40 @@ namespace TenmoServer.DAO
             return transfers;
         }
 
+        public List<Transfer> GetPendingTransfers(int user_id)
+        {
+            List<Transfer> transfers = new List<Transfer>();
+            string sql = @"SELECT transfer.transfer_id, tenmo_user.username, transfer.amount
+                    FROM transfer 
+                    JOIN account ON transfer.account_to = account.account_id 
+                    JOIN tenmo_user ON tenmo_user.user_id = account.user_id 
+                    WHERE transfer.transfer_status_id = 1 AND 
+                    (transfer.account_from IN(Select account_id FROM account WHERE user_id = 1001) 
+                    OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = 1001));";
 
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@user_id", user_id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Transfer transfer = MapRowToTransfer(reader);
+                        transfers.Add(transfer);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new DaoException("SQL exception on GetPendingTransfers", ex); ;
+            }
+
+            return transfers;
+        }
 
         //// account stuff?
         //public bool TransferMoney(int accountId, decimal amount)
