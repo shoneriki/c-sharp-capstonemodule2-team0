@@ -37,10 +37,18 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public decimal GetBalance()
+        public decimal GetUserBalance()
         {
             Account account = GetUserAccountById(UserId);
             return account.Balance;
+        }
+        
+        public int GetUserId()
+        {
+            
+            ApiUser apiUser = new ApiUser();
+            apiUser.UserId = UserId;
+            return apiUser.UserId;
         }
 
         public List<ApiUser> GetUsers()
