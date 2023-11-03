@@ -92,8 +92,8 @@ namespace TenmoClient.Services
                     transfer.Amount = amountToSend;
                     transfer.TypeId = 2;
                     transfer.StatusId = 1;
-                    transfer.AccountFrom = loginUserId;
-                    transfer.AccountTo = userId;
+                    transfer.AccountTo = tenmo.GetAccountByUserId(loginUserId).AccountId;
+                    transfer.AccountFrom = tenmo.GetAccountByUserId(userId).AccountId;
                     tenmo.CreateTransfer(transfer);
                 }
 
@@ -116,8 +116,8 @@ namespace TenmoClient.Services
                     transfer.Amount = amountToRequest;
                     transfer.TypeId = 2;
                     transfer.StatusId = 1;
-                    transfer.AccountFrom = loginUserId;
-                    transfer.AccountTo = userId;
+                    transfer.AccountTo = tenmo.GetAccountByUserId(loginUserId).AccountId;
+                    transfer.AccountFrom = tenmo.GetAccountByUserId(userId).AccountId;
                     //return transfer; void this method, add api to end and add transfer object to api sho has created
                 }
 

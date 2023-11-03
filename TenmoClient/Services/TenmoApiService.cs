@@ -20,15 +20,15 @@ namespace TenmoClient.Services
          * request to see list of users
          */
 
-        public List<Account> GetAccounts(Account userId)
-        {
-            RestRequest request = new RestRequest($"users/{userId}/accounts");
-            IRestResponse<List<Account>> response = client.Get<List<Account>>(request);
+        //public Account GetAccountById(int userId)
+        //{
+        //    RestRequest request = new RestRequest($"users/{userId}/accounts");
+        //    IRestResponse<Account> response = client.Get<Account>(request);
 
-            CheckForError(response);
-            return response.Data;
-        }
-        public Account GetUserAccountById(int userId)
+        //    CheckForError(response);
+        //    return response.Data;
+        //}
+        public Account GetAccountByUserId(int userId)
         {
             RestRequest request = new RestRequest($"users/{userId}/accounts");
             IRestResponse<Account> response = client.Get<Account>(request);
@@ -39,7 +39,7 @@ namespace TenmoClient.Services
 
         public decimal GetUserBalance()
         {
-            Account account = GetUserAccountById(UserId);
+            Account account = GetAccountByUserId(UserId);
             return account.Balance;
         }
         
