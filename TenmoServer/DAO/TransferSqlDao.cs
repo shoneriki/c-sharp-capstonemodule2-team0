@@ -25,9 +25,13 @@ namespace TenmoServer.DAO
                 throw new DaoException("Transfer to the same account is not allowed.");
             }
             Transfer newTransfer = null;
-            string sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+            string sql = "INSERT INTO transfer_status(transfer_status_id, transfer_status_desc) " +
+                "VALUES (@transfer_status_id, @transfer_status_desc) " +
+                "INSERT INTO transfer_type(transfer_type_id, transfer_type_desc) " +
+                "VALUES (@transfer_type_id, @transfer_type_desc) " +
+                "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "OUTPUT INSERTED.transfer_id " +
-                "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount)";
+                "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);";
 
             int newTransferId = 0;
             try
