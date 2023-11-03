@@ -25,10 +25,10 @@ namespace TenmoServer.Controllers
         [HttpPost()]
         public ActionResult<Transfer> CreatingTransfer(Transfer transfer)
         {
-            Account accountFrom = accountDao.GetAccountByUserId(transfer.AccountFrom);
-            Account accountTo = accountDao.GetAccountByUserId(transfer.AccountTo);
-            transfer.AccountFrom = accountFrom.AccountId;
-            transfer.AccountTo = accountTo.AccountId;
+            //Account accountFrom = accountDao.GetAccountByUserId(transfer.AccountFrom);
+            //Account accountTo = accountDao.GetAccountByUserId(transfer.AccountTo);
+            //transfer.AccountFrom = accountFrom.AccountId;
+            //transfer.AccountTo = accountTo.AccountId;
             Transfer added = TransferDao.CreateTransfer(transfer);
             Transfer newlyAddedTransfer = TransferDao.GetTransferById(transfer.TransferId);
             return Created($"/transfer/{newlyAddedTransfer.TransferId}", newlyAddedTransfer);
