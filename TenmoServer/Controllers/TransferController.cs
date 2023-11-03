@@ -14,6 +14,7 @@ namespace TenmoServer.Controllers
     {
         private ITransferDao TransferDao;
         private IUserDao userDao;
+        private IAccountDao accountDao;
 
         public TransfersController(ITransferDao TransferDao1, IUserDao userDao1)
         {
@@ -24,8 +25,13 @@ namespace TenmoServer.Controllers
         [HttpPost()]
         public ActionResult<Transfer> CreatingTransfer(Transfer transfer)
         {
+            Account accountFrom = accountDao.GetAccountByUserId(transfer.AccountFrom);
+            Account accountTo = accountDao.GetAccountByUserId(transfer.AccountTo);
+            transfer.AccountFrom = accountFrom.AccountId;
+            transfer.AccountTo = accountTo.AccountId;
             Transfer added = TransferDao.CreateTransfer(transfer);
-            return Created($"/transfer/{added.TransferId}", added);
+            Transfer newlyAddedTransfer = TransferDao.GetTransferById(transfer.TransferId);
+            return Created($"/transfer/{newlyAddedTransfer.TransferId}", newlyAddedTransfer);
         }
 
         [HttpGet("{transferid}")]
@@ -67,10 +73,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("/transfer/user/{userId}/pending")]
-        public ActionResult<List<Transfer>> PendingTransfers(int user_id)
-        {
+        //[HttpGet("/transfer/user/{userId}/pending")]
+        //public ActionResult<List<Transfer>> PendingTransfers(int user_id)
+        //{
 
-        }
+        //}
     }
 }
