@@ -53,7 +53,8 @@ namespace TenmoClient.Services
             return loginUser;
         }
 
-        //create promptfortransfer including logic for send and request include listOfUser
+        //TODO: figure out how to compare the ID's and then when everything is complete add all the information into the transfer object to return and add that object into the  
+
 
         // Add application-specific UI methods here...
         public void ListOfUsers(List<ApiUser> apiUsers)
@@ -65,7 +66,6 @@ namespace TenmoClient.Services
                 Console.WriteLine($"{element.UserId} / {element.Username}");
 
             }
-            Pause();
         }
 
         //publi

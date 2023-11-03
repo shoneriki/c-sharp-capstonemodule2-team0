@@ -91,13 +91,13 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
-                console.ListOfUsers(tenmoApiService.GetUser());
+                PromptforTransfer(menuSelection, tenmoApiService.GetUserId(), tenmoApiService.GetUserBalance(), tenmoApiService.GetUsers());
             }
 
             if (menuSelection == 5)
             {
                 // Request TE bucks
-                console.ListOfUsers(tenmoApiService.GetUser());
+                //console.ListOfUsers(tenmoApiService.GetUser());
             }
 
             if (menuSelection == 6)
@@ -168,7 +168,7 @@ namespace TenmoClient
         {
             try
             { 
-                Console.WriteLine($"Your current account balance is: {tenmoApiService.GetBalance()}");
+                Console.WriteLine($"Your current account balance is: {tenmoApiService.GetUserBalance()}");
             }
             catch (Exception)
             {
@@ -177,5 +177,68 @@ namespace TenmoClient
             console.Pause();
         }
 
+        public Transfer PromptforTransfer(int menuSelection, int loginUserId, decimal loginUserBalance, List<ApiUser> apiUsers)
+        {
+            loginUserId = tenmoApiService.GetUserId();
+            ApiUser appUser = new ApiUser();
+            Transfer transfer = null;
+            console.ListOfUsers(apiUsers);
+            try
+            {
+                if (menuSelection == 4)
+                {
+                    int userId = console.PromptForInteger("Id of the user you are sending to[0]: ");
+                    appUser.UserId = userId;
+                    while (loginUserId == appUser.UserId)
+                    {
+                        Console.WriteLine("You can not send money to yourself\n");
+                        userId = console.PromptForInteger("Id of the user you are sending to[0]: ");
+                    }
+                    decimal amountToSend = console.PromptForDecimal("Enter amount to send: ");
+                    while (loginUserBalance < amountToSend)
+                    {
+                        Console.WriteLine("Insufficient funds.\n");
+                        amountToSend = console.PromptForDecimal("Enter amount to send: ");
+                    }
+                    transfer.Amount = amountToSend;
+                    transfer.TypeId = 2;
+                    transfer.StatusId = 1;
+                    transfer.AccountFrom = loginUserId;
+                    transfer.AccountTo = userId;
+                    return transfer;
+                }
+
+
+                if (menuSelection == 5)
+                {
+                    int userId = console.PromptForInteger("Id of the user you are requesting from[0]: ");
+                    while (loginUserId == appUser.UserId)
+                    {
+                        Console.WriteLine("You can not requesting money from yourself\n");
+                        userId = console.PromptForInteger("Id of the user you are requesting from[0]: ");
+                        appUser.UserId = userId;
+                    }
+                    decimal amountToRequest = console.PromptForDecimal("Enter amount to request: ");
+                    while (loginUserBalance < amountToRequest)
+                    {
+                        Console.WriteLine("Insufficient funds.\n");
+                        amountToRequest = console.PromptForDecimal("Enter amount to send: ");
+                    }
+                    transfer.Amount = amountToRequest;
+                    transfer.TypeId = 2;
+                    transfer.StatusId = 1;
+                    transfer.AccountFrom = loginUserId;
+                    transfer.AccountTo = userId;
+                    //return transfer; void this method, add api to end and add transfer object to api sho has created
+                }
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("error has occured");
+            }
+            return transfer;
+
+        }
     }
 }
