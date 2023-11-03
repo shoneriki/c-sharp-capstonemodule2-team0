@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using TenmoServer.DAO;
+using TenmoServer.Exceptions;
 using TenmoServer.Models;
 
 namespace TenmoServer.Controllers
@@ -42,7 +43,7 @@ namespace TenmoServer.Controllers
         }
 
         [HttpGet("/users/{user_id}/transfers")]
-        public ActionResult<List<Transfer>> GetTransferByUser(int userId)
+        public ActionResult<List<Transfer>> GetTransferByUser(int user_id)
         {
             User user = userDao.GetUserById(user_id);
             if (user == null)
@@ -52,5 +53,24 @@ namespace TenmoServer.Controllers
             return TransferDao.GetTransfersOfUser(user_id);
         }
 
+        [HttpPut("/transfer/{transferId}")]
+        public ActionResult<Transfer> UpdatesTransfer(Transfer transfer)
+        {
+            try
+            {
+                Transfer result = TransferDao.UpdateTransfer(transfer);
+                return result;
+            }
+            catch (DaoException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("/transfer/user/{userId}/pending")]
+        public ActionResult<List<Transfer>> PendingTransfers(int user_id)
+        {
+
+        }
     }
 }
