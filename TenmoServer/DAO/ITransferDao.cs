@@ -14,7 +14,7 @@ namespace TenmoServer.DAO
 
         Transfer UpdateTransfer(Transfer transfer);
 
-        List<Transfer> GetPendingTransfers(int user_id)
+        List<Transfer> GetPendingTransfers(int user_id);
 
         // TODO: TransferMoney (give money aka lose money and balance decreases)
         //public decimal TransferMoneyToUser(decimal money);

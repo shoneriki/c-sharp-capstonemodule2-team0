@@ -67,10 +67,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("/transfer/user/{userId}/pending")]
-        public ActionResult<List<Transfer>> PendingTransfers(int user_id)
-        {
-
-        }
+        //[HttpGet("/transfer/user/{userId}/pending")]
+        //public ActionResult<List<Transfer>> PendingTransfers(int user_id)
+        //{
+        //    return;
+        //}
     }
 }
