@@ -171,41 +171,10 @@ namespace TenmoServer.DAO
 
 
         // account stuff?
-        public bool TransferMoney(int accountId, decimal amount)
+        public Account UpdateBalance(int accountId, decimal balance)
         {
-            
-            string sql = "UPDATE account SET balance = balance - @amount " +
-                "WHERE account_id = @accountId AND balance >= @amount";
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@amount", amount);
-                    cmd.Parameters.AddWithValue("@account_id", accountId);
-
-                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
-
-                    if (numberOfRowsAffected == 0)
-                    {
-                        throw new DaoException("Zero rows affected, expected at least one");
-                    }
-                }
-                return true;
-                
-            }
-            catch (SqlException ex)
-            {
-                throw new DaoException("SQL exception occured on TransferMoney", ex);
-            }
-        }
-
-        // account stuff?
-        public bool ReceiveMoney(int accountId, decimal amount)
-        {
-            string sql = "UPDATE account SET balance = balance + @amount " +
+            Account account = null;
+            string sql = "UPDATE account SET balance = @balance " +
                 "WHERE account_id = @accountId";
             try
             {
@@ -214,8 +183,8 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@amount", amount);
                     cmd.Parameters.AddWithValue("@account_id", accountId);
+                    cmd.Parameters.AddWithValue("@balance", balance);
 
                     int numberOfRowsAffected = cmd.ExecuteNonQuery();
 
@@ -224,13 +193,45 @@ namespace TenmoServer.DAO
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
                 }
-                return true;
+                account = GetAccountByAccountId(accountId);
+                
             }
             catch (SqlException ex)
             {
                 throw new DaoException("SQL exception occured on TransferMoney", ex);
             }
+            return account;
         }
+
+        // account stuff?
+        //public bool ReceiveMoney(int accountId, decimal amount)
+        //{
+        //    string sql = "UPDATE account SET balance = balance + @amount " +
+        //        "WHERE account_id = @accountId";
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
+
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            cmd.Parameters.AddWithValue("@amount", amount);
+        //            cmd.Parameters.AddWithValue("@account_id", accountId);
+
+        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+        //            if (numberOfRowsAffected == 0)
+        //            {
+        //                throw new DaoException("Zero rows affected, expected at least one");
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
+        //    }
+        //}
 
         private Account MapRowToAccount(SqlDataReader reader)
         {
