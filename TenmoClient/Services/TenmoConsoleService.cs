@@ -59,6 +59,7 @@ namespace TenmoClient.Services
         // Add application-specific UI methods here...
         public void PromptforTransfer(int menuSelection, TenmoApiService tenmo)
         {
+
             ListOfUsers(tenmo);
             try
             {
@@ -90,9 +91,10 @@ namespace TenmoClient.Services
                         Amount = amountToSend
                     };
                     tenmo.CreateTransfer(transfer);
-                    Console.WriteLine("transaction complete!");
-                }
+                    Console.WriteLine("Tranfer request sent!");
 
+                }
+                
 
                 if (menuSelection == 5)
                 {
@@ -115,8 +117,10 @@ namespace TenmoClient.Services
                         AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
                         AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
                         Amount = amountToRequest
+                        
                     };
-                    //return transfer; void this method, add api to end and add transfer object to api sho has created
+                    tenmo.CreateTransfer(transfer);
+                    Console.WriteLine("Request was sent!");
                 }
 
             }
@@ -139,10 +143,19 @@ namespace TenmoClient.Services
         //    return holder;
         //}
 
-        public Transfer PromptForRequestTransfer()
+        public void PromptToViewPendingTranfers(TenmoApiService tenmo)
         {
-            Transfer holder = new Transfer();
-            return holder;
+            List<Transfer> pendingTransfers = tenmo.GetTransfersByUserId(tenmo.UserId);
+
+            foreach (Transfer element in pendingTransfers)
+            {
+                if(element.TransferStatusId == 1)
+                {
+                    string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
+                    Console.WriteLine($"{element.TransferId} / {username} / {element.Amount}");
+                }
+
+            }
         }
 
         // TODO: create prompts for viewing past transfers and pending transfer

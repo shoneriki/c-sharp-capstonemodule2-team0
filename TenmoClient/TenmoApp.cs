@@ -97,7 +97,7 @@ namespace TenmoClient
             if (menuSelection == 5)
             {
                 // Request TE bucks
-                //console.ListOfUsers(tenmoApiService.GetUser());
+                console.PromptforTransfer(menuSelection, tenmoApiService);
             }
 
             if (menuSelection == 6)
