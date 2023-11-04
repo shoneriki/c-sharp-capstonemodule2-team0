@@ -286,36 +286,37 @@ namespace TenmoServer.DAO
         //    }
         //}
 
-        public bool updateBalance(int accountId, decimal balance)
-        {
+        //public Account UpdateBalance(int accountId, decimal balance)
+        //{
+        //    Account account = null;
+        //    string sql = "UPDATE account SET balance = @balance " +
+        //        "WHERE account_id = @accountId";
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
 
-            string sql = "UPDATE account SET balance = @balance " +
-                "WHERE account_id = @accountId";
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            cmd.Parameters.AddWithValue("@balance", balance);
+        //            cmd.Parameters.AddWithValue("@account_id", accountId);
 
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@balance", balance);
-                    cmd.Parameters.AddWithValue("@account_id", accountId);
+        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
 
-                    int numberOfRowsAffected = cmd.ExecuteNonQuery();
+        //            if (numberOfRowsAffected == 0)
+        //            {
+        //                throw new DaoException("Zero rows affected, expected at least one");
+        //            }
+        //            account = 
+        //        }
+        //        return account;
 
-                    if (numberOfRowsAffected == 0)
-                    {
-                        throw new DaoException("Zero rows affected, expected at least one");
-                    }
-                }
-                return true;
-
-            }
-            catch (SqlException ex)
-            {
-                throw new DaoException("SQL exception occured on TransferMoney", ex);
-            }
-        }
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
+        //    }
+        //}
 
 
         private Transfer MapRowToTransfer(SqlDataReader reader)
