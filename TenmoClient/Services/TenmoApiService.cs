@@ -46,7 +46,7 @@ namespace TenmoClient.Services
         
         public ApiUser GetUserByAccountId(int accountId)
         {
-            RestRequest request = new RestRequest($"users/{accountId}");
+            RestRequest request = new RestRequest($"users/account/{accountId}/user");
             IRestResponse<ApiUser> response = client.Get<ApiUser>(request);
 
             CheckForError(response);

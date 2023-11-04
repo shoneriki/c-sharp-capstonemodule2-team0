@@ -161,6 +161,7 @@ namespace TenmoServer.DAO
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
+                    conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@account_id", account_id);
                     SqlDataReader reader = cmd.ExecuteReader();

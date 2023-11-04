@@ -99,6 +99,7 @@ namespace TenmoServer.DAO
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
+                    conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
                     cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
@@ -176,8 +177,8 @@ namespace TenmoServer.DAO
     "JOIN account ON transfer.account_from = account.account_id " +
     "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
     "WHERE " +
-    //"transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
-    //"OR " +
+    "transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
+    "OR " +
     "transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
 
             try
