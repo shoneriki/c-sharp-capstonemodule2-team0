@@ -86,6 +86,7 @@ namespace TenmoClient
             if (menuSelection == 3)
             {
                 // View your pending requests
+                console.PromptToViewPendingTranfers(tenmoApiService);
             }
 
             if (menuSelection == 4)
