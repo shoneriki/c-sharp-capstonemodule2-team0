@@ -44,12 +44,13 @@ namespace TenmoClient.Services
             return account.Balance;
         }
         
-        public int GetUserId()
+        public ApiUser GetUserByAccountId(int accountId)
         {
-            
-            ApiUser apiUser = new ApiUser();
-            apiUser.UserId = UserId;
-            return apiUser.UserId;
+            RestRequest request = new RestRequest($"users/{accountId}");
+            IRestResponse<ApiUser> response = client.Get<ApiUser>(request);
+
+            CheckForError(response);
+            return response.Data;
         }
 
         public List<ApiUser> GetUsers()
@@ -116,7 +117,17 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public List<Transfer> GetTransferListOfUser(int user_id)
+        public Account UpdateAccount(Account account)
+        {
+            RestRequest request = new RestRequest($"accounts/update");
+            request.AddJsonBody(account);
+            IRestResponse<Account> response = client.Put<Account>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public List<Transfer> GetTransfersByUserId(int user_id)
         {
             RestRequest request = new RestRequest($"transfer/users/{user_id}");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
