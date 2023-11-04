@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Xml.Schema;
 using TenmoServer.Exceptions;
 using TenmoServer.Models;
 using TenmoServer.Security;
@@ -25,21 +27,49 @@ namespace TenmoServer.DAO
                 throw new DaoException("Transfer to the same account is not allowed.");
             }
             Transfer newTransfer = null;
-            string sql = "INSERT INTO transfer_status(transfer_status_id, transfer_status_desc) " +
-                "VALUES (@transfer_status_id, @transfer_status_desc) " +
-                "INSERT INTO transfer_type(transfer_type_id, transfer_type_desc) " +
-                "VALUES (@transfer_type_id, @transfer_type_desc) " +
-                "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+            //string transferStatusFindSql =
+            //    "SELECT transfer_status_id " +
+            //    "FROM transfer_status " +
+            //    "WHERE transfer_status.transfer_status_id = @transfer_status_id";
+            //string transferTypeFindSql =
+            //    "SELECT transfer_type_id " +
+            //    "FROM transfer_type " +
+            //    "WHERE transfer_type.transfer_type_id = @transfer_type_id";
+            string insertSql = 
+                "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "OUTPUT INSERTED.transfer_id " +
                 "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);";
 
             int newTransferId = 0;
+
             try
             {
+                //using (SqlConnection conn = new SqlConnection(connectionString))
+                //{
+                //    conn.Open();
+                //    SqlCommand cmd = new SqlCommand(transferStatusFindSql, conn);
+                //    cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                //    SqlDataReader reader = cmd.ExecuteReader();
+                //    if (reader.Read())
+                //    {
+                //        transferStatusId = Convert.ToInt32(reader["transfer_status_id"]);
+                //    }
+                //}
+                //using (SqlConnection conn = new SqlConnection(connectionString))
+                //{
+                //    conn.Open();
+                //    SqlCommand cmd = new SqlCommand(transferTypeFindSql, conn);
+                //    cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                //    SqlDataReader reader = cmd.ExecuteReader();
+                //    if (reader.Read())
+                //    {
+                //        transferTypeId = Convert.ToInt32(reader["transfer_type_id"]);
+                //    }
+                //}
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    SqlCommand cmd = new SqlCommand(insertSql, conn);
                     cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
                     cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
                     cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);

@@ -78,18 +78,30 @@ namespace TenmoClient.Services
         /* 
 
 */
+        /* */
+        public TransferStatus GetTransferStatusById(int transferStatusId)
+        {
+            RestRequest request = new RestRequest("transfer_status");
+            IRestResponse<TransferStatus> response = client.Get<TransferStatus>(request);
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public TransferType GetTransferTypeById(int transferTypeId)
+        {
+            RestRequest request = new RestRequest("transfer_type");
+            IRestResponse<TransferType> response = client.Get<TransferType>(request);
+            CheckForError(response);
+            return response.Data;
+        }
+        /* */
 
         public Transfer CreateTransfer(Transfer transfer)
         {
             RestRequest request = new RestRequest("transfer");
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Post<Transfer>(request);
-
             CheckForError(response);
-            //if (response.IsSuccessful)
-            //{
-            //    decimal updatedBalance = GetBalance();
-            //}
             return response.Data;
         }
 
