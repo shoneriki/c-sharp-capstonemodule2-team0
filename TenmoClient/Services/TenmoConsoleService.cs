@@ -145,13 +145,14 @@ namespace TenmoClient.Services
 
         public void PromptToViewPendingTranfers(TenmoApiService tenmo)
         {
-            List<Transfer> pendingTransfers = tenmo.GetTransfersByUserId(tenmo.UserId);
+            List<Transfer> transfers = tenmo.GetTransfersByUserId(tenmo.UserId);
 
-            foreach (Transfer element in pendingTransfers)
+
+            foreach (Transfer element in transfers)
             {
                 if(element.TransferStatusId == 1)
                 {
-                    string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
+                    string username = tenmo.Username;
                     Console.WriteLine($"{element.TransferId} / {username} / {element.Amount}");
                 }
 

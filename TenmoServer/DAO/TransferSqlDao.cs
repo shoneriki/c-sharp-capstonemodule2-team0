@@ -156,16 +156,29 @@ namespace TenmoServer.DAO
         public List<Transfer> GetTransfersOfUser(int userId)
         {
             List<Transfer> transfers = new List<Transfer>();
+            //string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
+            //    "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
+            //    "tenmo_user.username, account.balance " +
+            //    "FROM transfer " +
+            //    "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
+            //    "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
+            //    "JOIN account ON transfer.account_from = account.account_id " +
+            //    "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
+            //    "WHERE transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
+            //    "OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
+
             string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
-                "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
-                "tenmo_user.username, account.balance " +
-                "FROM transfer " +
-                "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
-                "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
-                "JOIN account ON transfer.account_from = account.account_id " +
-                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-                "WHERE transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
-                "OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
+    "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
+    "tenmo_user.username, account.balance " +
+    "FROM transfer " +
+    "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
+    "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
+    "JOIN account ON transfer.account_from = account.account_id " +
+    "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
+    "WHERE " +
+    //"transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
+    //"OR " +
+    "transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
 
             try
             {
@@ -199,8 +212,10 @@ namespace TenmoServer.DAO
                     JOIN account ON transfer.account_to = account.account_id 
                     JOIN tenmo_user ON tenmo_user.user_id = account.user_id 
                     WHERE transfer.transfer_status_id = 1 AND 
-                    (transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) 
-                    OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id));";
+                    OR
+transfer.account_from IN(SELECT account_id FROM account WHERE user_id = @user_id))
+";
+            //(transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id)
 
             try
             {
@@ -307,9 +322,9 @@ namespace TenmoServer.DAO
         //            {
         //                throw new DaoException("Zero rows affected, expected at least one");
         //            }
-        //            account = 
+
         //        }
-        //        return account;
+        //        account = GetAccountById(account_id);
 
         //    }
         //    catch (SqlException ex)

@@ -49,7 +49,7 @@ namespace TenmoServer.Controllers
         }
 
         [HttpGet("users/{user_id}/transfers")]
-        public ActionResult<List<Transfer>> GetTransferByUser(int user_id)
+        public ActionResult<List<Transfer>> GetTransfersByUserId(int user_id)
         {
             User user = userDao.GetUserById(user_id);
             if (user == null)
@@ -59,7 +59,7 @@ namespace TenmoServer.Controllers
             return transferDao.GetTransfersOfUser(user_id);
         }
 
-        [HttpPut("/transfer/{transferId}")]
+        [HttpPut("{transferId}")]
         public ActionResult<Transfer> UpdatesTransfer(Transfer transfer)
         {
             try
@@ -73,10 +73,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("/transfer/user/{userId}/pending")]
-        public ActionResult<List<Transfer>> PendingTransfers(int user_id)
-        {
-            return transferDao.GetPendingTransfers(user_id);
-        }
+        //[HttpGet("/transfer/user/{userId}/pending")]
+        //public ActionResult<List<Transfer>> PendingTransfers(int user_id)
+        //{
+        //    return transferDao.GetPendingTransfers(user_id);
+        //}
     }
 }
