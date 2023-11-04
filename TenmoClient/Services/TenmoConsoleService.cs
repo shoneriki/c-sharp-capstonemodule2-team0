@@ -59,21 +59,16 @@ namespace TenmoClient.Services
         // Add application-specific UI methods here...
         public void PromptforTransfer(int menuSelection, TenmoApiService tenmo)
         {
-            int loginUserId = tenmo.GetUserId();
-            ApiUser appUser = new ApiUser();
-            Transfer transfer = new Transfer();
             ListOfUsers(tenmo);
             try
             {
                 if (menuSelection == 4)
                 {
                     int userId = PromptForInteger("Id of the user you are sending to[0]");
-                    appUser.UserId = userId;
-                    while (loginUserId == appUser.UserId)
+                    while (tenmo.UserId == userId)
                     {
                         Console.WriteLine("You can not send money to yourself\n");
                         userId = PromptForInteger("Id of the user you are sending to[0]");
-                        appUser.UserId = userId;
                     }
                     decimal amountToSend = PromptForDecimal("Enter amount to send");
                     while (amountToSend <= 0)
@@ -81,31 +76,31 @@ namespace TenmoClient.Services
                         Console.WriteLine("Can't send zero or negative amount\n");
                         amountToSend = PromptForDecimal("Enter amount to send");
                     }
-                    Console.WriteLine("transaction complete!");
-                    Pause();
                     if (amountToSend > tenmo.GetUserBalance())
                     {
                         Console.WriteLine("Insufficient funds\n");
                         Pause();
                     }
-
-                    transfer.Amount = amountToSend;
-                    transfer.TypeId = 2;
-                    transfer.StatusId = 1;
-                    transfer.AccountTo = tenmo.GetAccountByUserId(loginUserId).AccountId;
-                    transfer.AccountFrom = tenmo.GetAccountByUserId(userId).AccountId;
+                    Transfer transfer = new Transfer
+                    {
+                        TransferTypeId = 2,
+                        TransferStatusId = 2,
+                        AccountFrom = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
+                        AccountTo = tenmo.GetAccountByUserId(userId).AccountId,
+                        Amount = amountToSend
+                    };
                     tenmo.CreateTransfer(transfer);
+                    Console.WriteLine("transaction complete!");
                 }
 
 
                 if (menuSelection == 5)
                 {
                     int userId = PromptForInteger("Id of the user you are requesting from[0]: ");
-                    while (loginUserId == appUser.UserId)
+                    while (userId == tenmo.UserId)
                     {
                         Console.WriteLine("You can not requesting money from yourself\n");
                         userId = PromptForInteger("Id of the user you are requesting from[0]: ");
-                        appUser.UserId = userId;
                     }
                     decimal amountToRequest = PromptForDecimal("Enter amount to request: ");
                     while (amountToRequest <= 0)
@@ -113,11 +108,14 @@ namespace TenmoClient.Services
                         Console.WriteLine("Can't request zero or negative amount\n");
                         amountToRequest = PromptForDecimal("Enter amount to send: ");
                     }
-                    transfer.Amount = amountToRequest;
-                    transfer.TypeId = 2;
-                    transfer.StatusId = 1;
-                    transfer.AccountTo = tenmo.GetAccountByUserId(loginUserId).AccountId;
-                    transfer.AccountFrom = tenmo.GetAccountByUserId(userId).AccountId;
+                    Transfer transfer = new Transfer
+                    {
+                        TransferTypeId = 1,
+                        TransferStatusId = 1,
+                        AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
+                        AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
+                        Amount = amountToRequest
+                    };
                     //return transfer; void this method, add api to end and add transfer object to api sho has created
                 }
 
@@ -151,10 +149,10 @@ namespace TenmoClient.Services
         // TODO: Prompt to accept, deny, or wait on transfer request
         public void ListOfUsers(TenmoApiService tenmo)
         {
-            int loginUserId = tenmo.GetUserId();
-            foreach (ApiUser element in tenmo.GetUsers())
+            List<ApiUser> users = tenmo.GetUsers();
+            foreach (ApiUser element in users)
             {
-                if (element.UserId != loginUserId)
+                if (element.UserId != tenmo.UserId)
                 {
                     Console.WriteLine($"{element.UserId} / {element.Username}");
                 }

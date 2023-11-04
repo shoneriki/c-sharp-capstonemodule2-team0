@@ -12,13 +12,13 @@ namespace TenmoServer.Controllers
     [ApiController]
     public class TransfersController : ControllerBase
     {
-        private ITransferDao TransferDao;
+        private ITransferDao transferDao;
         private IUserDao userDao;
         private IAccountDao accountDao;
 
         public TransfersController(ITransferDao TransferDao1, IUserDao userDao1)
         {
-            TransferDao = TransferDao1;
+            transferDao = TransferDao1;
             userDao = userDao1;
         }
 
@@ -29,15 +29,15 @@ namespace TenmoServer.Controllers
             //Account accountTo = accountDao.GetAccountByUserId(transfer.AccountTo);
             //transfer.AccountFrom = accountFrom.AccountId;
             //transfer.AccountTo = accountTo.AccountId;
-            Transfer added = TransferDao.CreateTransfer(transfer);
-            Transfer newlyAddedTransfer = TransferDao.GetTransferById(transfer.TransferId);
+            Transfer added = transferDao.CreateTransfer(transfer);
+            Transfer newlyAddedTransfer = transferDao.GetTransferById(added.TransferId);
             return Created($"/transfer/{newlyAddedTransfer.TransferId}", newlyAddedTransfer);
         }
 
         [HttpGet("{transferid}")]
         public ActionResult<Transfer> Gettransfer(int transferId)
         {
-            Transfer transfer = TransferDao.GetTransferById(transferId);
+            Transfer transfer = transferDao.GetTransferById(transferId);
             if(transfer != null)
             {
                 return transfer;
@@ -56,7 +56,7 @@ namespace TenmoServer.Controllers
             {
                 return NotFound();
             }
-            return TransferDao.GetTransfersOfUser(user_id);
+            return transferDao.GetTransfersOfUser(user_id);
         }
 
         [HttpPut("/transfer/{transferId}")]
@@ -64,7 +64,7 @@ namespace TenmoServer.Controllers
         {
             try
             {
-                Transfer result = TransferDao.UpdateTransfer(transfer);
+                Transfer result = transferDao.UpdateTransfer(transfer);
                 return result;
             }
             catch (DaoException)
