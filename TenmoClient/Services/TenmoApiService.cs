@@ -2,6 +2,7 @@
 using RestSharp.Authenticators;
 using System.Collections.Generic;
 using TenmoClient.Models;
+using System.Net.Http;
 
 namespace TenmoClient.Services
 {
