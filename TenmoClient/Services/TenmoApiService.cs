@@ -129,7 +129,7 @@ namespace TenmoClient.Services
 
         public List<Transfer> GetTransfersByUserId(int user_id)
         {
-            RestRequest request = new RestRequest($"transfer/users/{user_id}");
+            RestRequest request = new RestRequest($"transfer/users/{user_id}/transfers");
             IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
             CheckForError(response);

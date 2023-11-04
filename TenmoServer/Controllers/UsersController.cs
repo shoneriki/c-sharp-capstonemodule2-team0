@@ -44,7 +44,7 @@ namespace TenmoServer.Controllers
 
         }
 
-        [HttpGet("{account_id}")]
+        [HttpGet("{accountid}")]
         public ActionResult<User> GetUserByAccountID(int accountId)
         {
             User user = userDao.GetUserByAccountId(accountId);

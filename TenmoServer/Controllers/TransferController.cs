@@ -48,7 +48,7 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet("/users/{user_id}/transfers")]
+        [HttpGet("users/{user_id}/transfers")]
         public ActionResult<List<Transfer>> GetTransferByUser(int user_id)
         {
             User user = userDao.GetUserById(user_id);
