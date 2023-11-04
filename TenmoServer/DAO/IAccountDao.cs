@@ -7,8 +7,8 @@ namespace TenmoServer.DAO
     {
         decimal GetBalanceByUserId(int id);
         Account GetAccountById(int account_id);
-        bool TransferMoney(int accountId, decimal amount);
-        bool ReceiveMoney(int accountId, decimal amount);
+        Account UpdateBalance(int accountId, decimal balance);
+        //bool ReceiveMoney(int accountId, decimal amount);
         //public IList<Account> GetAccounts();
 
         Account GetAccountByUserId(int user_id);

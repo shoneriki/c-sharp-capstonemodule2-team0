@@ -14,7 +14,7 @@ namespace TenmoServer.Controllers
     {
         private ITransferDao transferDao;
         private IUserDao userDao;
-        private IAccountDao accountDao;
+        //private IAccountDao accountDao;
 
         public TransfersController(ITransferDao TransferDao1, IUserDao userDao1)
         {
@@ -73,10 +73,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        //[HttpGet("/transfer/user/{userId}/pending")]
-        //public ActionResult<List<Transfer>> PendingTransfers(int user_id)
-        //{
-
-        //}
+        [HttpGet("/transfer/user/{userId}/pending")]
+        public ActionResult<List<Transfer>> PendingTransfers(int user_id)
+        {
+            return transferDao.GetPendingTransfers(user_id);
+        }
     }
 }

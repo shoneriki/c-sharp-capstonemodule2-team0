@@ -47,12 +47,12 @@ namespace TenmoServer.Controllers
         }
 
         [HttpPut("/balance")]
-        public bool UpdateBalanceByGiving(int accountId, decimal amount)
+        public Account UpdateBalance(int accountId, decimal balance)
         {
             try
             {
-                bool giving = accountDao.TransferMoney(accountId, amount);
-                return giving;
+                Account updatedBalance = accountDao.UpdateBalance(accountId, balance);
+                return updatedBalance;
             }
             catch (DaoException)
             {
@@ -60,19 +60,19 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpPut("/balance")]
-        public bool UpdateBalanceByTaking(int accountId, decimal amount)
-        {
-            try
-            {
-                bool taking = accountDao.TransferMoney(accountId, amount);
-                return taking;
-            }
-            catch (DaoException)
-            {
-                throw new DaoException("Unacceptable command");
-            }
-        }
+        //[HttpPut("/balance")]
+        //public bool UpdateBalanceByTaking(int accountId, decimal amount)
+        //{
+        //    try
+        //    {
+        //        bool taking = accountDao.TransferMoney(accountId, amount);
+        //        return taking;
+        //    }
+        //    catch (DaoException)
+        //    {
+        //        throw new DaoException("Unacceptable command");
+        //    }
+        //}
 
 
     }
