@@ -102,6 +102,7 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
                     cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
                     cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
                     cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
@@ -115,7 +116,25 @@ namespace TenmoServer.DAO
                         throw new DaoException("Zero rows affected, expected at least one");
                     }
 
-                }
+					if (transfer.TransferStatusId == 2 && transfer.TransferTypeId == 2)
+					{
+						string updateSenderBalanceSql = "UPDATE account SET balance = balance - @amount WHERE account_id = @account_from";
+						string updateRecipientBalanceSql = "UPDATE account SET balance = balance + @amount WHERE account_id = @account_to";
+
+						// Deduct amount from sender's account
+						SqlCommand updateSenderCmd = new SqlCommand(updateSenderBalanceSql, conn);
+						updateSenderCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+						updateSenderCmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+						updateSenderCmd.ExecuteNonQuery();
+
+						// Add amount to recipient's account
+						SqlCommand updateRecipientCmd = new SqlCommand(updateRecipientBalanceSql, conn);
+						updateRecipientCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+						updateRecipientCmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+						updateRecipientCmd.ExecuteNonQuery();
+					}
+
+				}
                 updatedTransfer = GetTransferById(transfer.TransferId);
             }
             catch (SqlException ex)

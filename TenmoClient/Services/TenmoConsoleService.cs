@@ -115,8 +115,8 @@ namespace TenmoClient.Services
                     {
                         TransferTypeId = 1,
                         TransferStatusId = 1,
-                        AccountFrom = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
-                        AccountTo = tenmo.GetAccountByUserId(userId).AccountId,
+                        AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
+                        AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
                         Amount = amountToRequest
                         
                     };
@@ -144,7 +144,7 @@ namespace TenmoClient.Services
         //    return holder;
         //}
 
-        public void PromptToViewPendingTranfers(TenmoApiService tenmo)
+        public void PromptToViewPendingTransfers(TenmoApiService tenmo)
         {
             List<Transfer> transfers = tenmo.GetTransfersByUserId(tenmo.UserId);
             Account loginUser = tenmo.GetAccountByUserId(tenmo.UserId);
@@ -152,22 +152,21 @@ namespace TenmoClient.Services
             foreach (Transfer element in transfers)
             {
                 //This goes through the list and only pulls pending request and only pulls them when the request is sent to the user.
-                if(element.TransferStatusId == 1 && element.AccountTo == loginUser.AccountId)
-                {                  
+                if (element.TransferStatusId == 1 && element.AccountFrom == loginUser.AccountId)
+                {
                     //this prints the usernames.
-                    string username = tenmo.GetUserByAccountId(element.AccountFrom).Username;
-                    
-                    Console.WriteLine($"{element.TransferId} / {username} / {element.Amount}");
-                }
+                    string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
 
+                    Console.WriteLine($"{element.TransferId} / {username} has requested ${element.Amount} from you");
+                }
             }
             foreach (Transfer element in transfers)
             {
                 //This goes through the list and only pulls pending request and only pulls them when the request is sent to the user.
-                if (element.TransferStatusId == 1 && element.AccountTo == loginUser.AccountId)
+                if (element.TransferStatusId == 1 && element.AccountFrom == loginUser.AccountId)
                 {
                     //this allows user to pick from available requests again and make a decision.
-                    //TODO: finish logic on updating franfer
+                    //TODO: finish logic on updating transfer
 
                     //prompting for the user they want to accept/reject/do nothing
                     int userSelection = PromptForInteger("Please enter transfer ID to approve/reject (0 to cancel)");
@@ -183,6 +182,13 @@ namespace TenmoClient.Services
                     else if (userSelection == element.TransferId)
                     {
                         int userInput = PromptForInteger("Select (1)Approve / (2)Reject / (0)Cancel");
+                        if (userInput == 1)
+                        {
+							Transfer transferToUpdate = tenmo.GetTransferDetails(element.TransferId);
+                            transferToUpdate.TransferStatusId = 2;
+                            transferToUpdate.TransferTypeId = 2;
+                            tenmo.UpdateTransfer(transferToUpdate);
+						}
 
                     }
                 }
@@ -214,14 +220,17 @@ namespace TenmoClient.Services
 			foreach (Transfer element in transfers)
 			{
 
-				if (element.TransferStatusId == 2 && element.AccountFrom == loginUser.AccountId)
+				if ((element.TransferStatusId == 2  || element.TransferStatusId == 3) && element.AccountFrom == loginUser.AccountId)
 				{
 					string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
 
-					Console.WriteLine($"{element.TransferId} / {username} / {element.Amount}");
-				}
+                    string status = element.TransferStatusId == 2 ? "Sent" : "Rejected from sending";
 
-			}
+                    Console.WriteLine($"{element.TransferId} / {username} / {status} ${element.Amount}");
+
+                }
+
+            }
 			Pause();
 		}
     }
