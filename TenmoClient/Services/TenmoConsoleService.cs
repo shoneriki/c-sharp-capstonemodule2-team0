@@ -87,8 +87,8 @@ namespace TenmoClient.Services
                     {
                         TransferTypeId = 2,
                         TransferStatusId = 2,
-                        AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
-                        AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
+                        AccountTo = tenmo.GetAccountByUserId(userId).AccountId,
+                        AccountFrom = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
                         Amount = amountToSend
                     };
                     tenmo.CreateTransfer(transfer);

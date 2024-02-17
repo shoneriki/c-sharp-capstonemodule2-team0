@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
+using System.Transactions;
 using System.Xml.Schema;
 using TenmoServer.Exceptions;
 using TenmoServer.Models;
@@ -40,36 +42,15 @@ namespace TenmoServer.DAO
                 "OUTPUT INSERTED.transfer_id " +
                 "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);";
 
-            int newTransferId = 0;
+			int newTransferId = 0;
 
             try
             {
-                //using (SqlConnection conn = new SqlConnection(connectionString))
-                //{
-                //    conn.Open();
-                //    SqlCommand cmd = new SqlCommand(transferStatusFindSql, conn);
-                //    cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
-                //    SqlDataReader reader = cmd.ExecuteReader();
-                //    if (reader.Read())
-                //    {
-                //        transferStatusId = Convert.ToInt32(reader["transfer_status_id"]);
-                //    }
-                //}
-                //using (SqlConnection conn = new SqlConnection(connectionString))
-                //{
-                //    conn.Open();
-                //    SqlCommand cmd = new SqlCommand(transferTypeFindSql, conn);
-                //    cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
-                //    SqlDataReader reader = cmd.ExecuteReader();
-                //    if (reader.Read())
-                //    {
-                //        transferTypeId = Convert.ToInt32(reader["transfer_type_id"]);
-                //    }
-                //}
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(insertSql, conn);
+
+					SqlCommand cmd = new SqlCommand(insertSql, conn);
                     cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
                     cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
                     cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
@@ -78,11 +59,31 @@ namespace TenmoServer.DAO
 
                     newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
 
-                }
+					// If the transfer is approved, update the account balances
+					if (transfer.TransferStatusId == 2)
+					{
+						string updateSenderBalanceSql = "UPDATE account SET balance = balance - @amount WHERE account_id = @account_from";
+						string updateRecipientBalanceSql = "UPDATE account SET balance = balance + @amount WHERE account_id = @account_to";
+
+						// Deduct amount from sender's account
+						SqlCommand updateSenderCmd = new SqlCommand(updateSenderBalanceSql, conn);
+						updateSenderCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+						updateSenderCmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+						updateSenderCmd.ExecuteNonQuery();
+
+						// Add amount to recipient's account
+						SqlCommand updateRecipientCmd = new SqlCommand(updateRecipientBalanceSql, conn);
+						updateRecipientCmd.Parameters.AddWithValue("@amount", transfer.Amount);
+						updateRecipientCmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+						updateRecipientCmd.ExecuteNonQuery();
+					}
+
+				}
                 newTransfer = GetTransferById(newTransferId);
             }
             catch (SqlException ex)
             {
+
                 throw new DaoException("error thrown at create transfer", ex);
             }
             return newTransfer;
