@@ -205,5 +205,24 @@ namespace TenmoClient.Services
 
             }
         }
+
+        public void ViewPreviousTransfers(TenmoApiService tenmo)
+        {
+			List<Transfer> transfers = tenmo.GetTransfersByUserId(tenmo.UserId);
+			Account loginUser = tenmo.GetAccountByUserId(tenmo.UserId);
+
+			foreach (Transfer element in transfers)
+			{
+
+				if (element.TransferStatusId == 2 && element.AccountFrom == loginUser.AccountId)
+				{
+					string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
+
+					Console.WriteLine($"{element.TransferId} / {username} / {element.Amount}");
+				}
+
+			}
+			Pause();
+		}
     }
 }

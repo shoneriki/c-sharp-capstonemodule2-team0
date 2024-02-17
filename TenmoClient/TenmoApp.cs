@@ -81,7 +81,9 @@ namespace TenmoClient
             if (menuSelection == 2)
             {
                 // View your past transfers
-            }
+                console.ViewPreviousTransfers(tenmoApiService);
+
+			}
 
             if (menuSelection == 3)
             {
