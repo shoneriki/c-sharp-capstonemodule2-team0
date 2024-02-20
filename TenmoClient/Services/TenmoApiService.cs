@@ -136,6 +136,15 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        public List<Transfer> GetPendingTransfersByuserId(int user_id)
+        {
+			RestRequest request = new RestRequest($"transfer/users/{user_id}/pending_transfers");
+			IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
+
+			CheckForError(response);
+			return response.Data;
+		}
+
         public Transfer GetTransferDetails(int transferId)
         {
             RestRequest request = new RestRequest($"transfer/{transferId}");
@@ -144,69 +153,6 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
-
-        //public List<Transfer> GetPendingTransfersForUser(int userId)
-        //{
-        //    RestRequest request = new RestRequest($"transfer/users/{userId}/pending");
-        //    IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
-
-        //    CheckForError(response);
-        //    return response.Data;
-        //}
-
-
-        //public TransferType SendMoney(TransferType transferType)
-        //{
-        //    RestRequest request = new RestRequest($"transfer/{transferType.TypeDesc}");
-        //    IRestResponse<TransferType> response = client.Put<TransferType>(request);
-        //    CheckForError(response);
-        //    return response.Data;
-
-        //}
-
-        //public TransferType RequestMoney(TransferType transferType)
-        //{
-        //    RestRequest request = new RestRequest($"transfer/{transferType.TypeDesc}");
-        //    IRestResponse<TransferType> response = client.Put<TransferType>(request);
-        //    CheckForError(response);
-        //    return response.Data;
-
-        //}
-
-        //public List<Transfer> GetPendingTransfers(int transfer_status_id)
-        //{
-        //    List<Transfer> transfers = new List<Transfer>();
-        //    string sql = "SELECT * FROM transfer " +
-        //        "WHERE transfer_status_id = @transfer_status_id";
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@transfer_status_id", transfer_status_id);
-        //            SqlDataReader reader = cmd.ExecuteReader();
-
-        //            while (reader.Read())
-        //            {
-        //                Transfer transfer = MapRowToTransfer(reader);
-        //                transfers.Add(transfer);
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new DaoException("SQL exception on GetPendingTransfers", ex); ;
-        //    }
-
-        //    return transfers;
-        //}
-
-
-        /* 
-
-         */
 
 
     }

@@ -29,14 +29,6 @@ namespace TenmoServer.DAO
                 throw new DaoException("Transfer to the same account is not allowed.");
             }
             Transfer newTransfer = null;
-            //string transferStatusFindSql =
-            //    "SELECT transfer_status_id " +
-            //    "FROM transfer_status " +
-            //    "WHERE transfer_status.transfer_status_id = @transfer_status_id";
-            //string transferTypeFindSql =
-            //    "SELECT transfer_type_id " +
-            //    "FROM transfer_type " +
-            //    "WHERE transfer_type.transfer_type_id = @transfer_type_id";
             string insertSql = 
                 "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "OUTPUT INSERTED.transfer_id " +
@@ -177,29 +169,17 @@ namespace TenmoServer.DAO
         public List<Transfer> GetTransfersOfUser(int userId)
         {
             List<Transfer> transfers = new List<Transfer>();
-            //string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
-            //    "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
-            //    "tenmo_user.username, account.balance " +
-            //    "FROM transfer " +
-            //    "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
-            //    "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
-            //    "JOIN account ON transfer.account_from = account.account_id " +
-            //    "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-            //    "WHERE transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
-            //    "OR transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
+            
 
-            string sql = "SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, " +
-    "transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, " +
-    "tenmo_user.username, account.balance " +
-    "FROM transfer " +
-    "JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id " +
-    "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
-    "JOIN account ON transfer.account_from = account.account_id " +
-    "JOIN tenmo_user ON account.user_id = tenmo_user.user_id " +
-    "WHERE " +
-    "transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) " +
-    "OR " +
-    "transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
+            string sql = @"SELECT transfer.transfer_id, transfer.transfer_type_id, transfer.transfer_status_id, transfer.amount, transfer.account_from, transfer.account_to, transfer_type.transfer_type_desc, transfer_status.transfer_status_desc, tenmo_user.username, account.balance 
+                FROM transfer 
+                JOIN transfer_type ON transfer.transfer_type_id = transfer_type.transfer_type_id 
+                JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id 
+                JOIN account ON transfer.account_from = account.account_id 
+                JOIN tenmo_user ON account.user_id = tenmo_user.user_id 
+                WHERE transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id) 
+                OR 
+                transfer.account_to IN(SELECT account_id FROM account WHERE user_id = @user_id);";
 
             try
             {
@@ -234,9 +214,8 @@ namespace TenmoServer.DAO
                     JOIN tenmo_user ON tenmo_user.user_id = account.user_id 
                     WHERE transfer.transfer_status_id = 1 AND 
                     OR
-transfer.account_from IN(SELECT account_id FROM account WHERE user_id = @user_id))
-";
-            //(transfer.account_from IN(Select account_id FROM account WHERE user_id = @user_id)
+                    transfer.account_from IN(SELECT account_id FROM account WHERE user_id = @user_id))
+                    ";
 
             try
             {
@@ -261,99 +240,6 @@ transfer.account_from IN(SELECT account_id FROM account WHERE user_id = @user_id
 
             return transfers;
         }
-
-        //// account stuff?
-        //public bool TransferMoney(int accountId, decimal amount)
-        //{
-        //    string sql = "UPDATE account SET balance = balance - @amount " +
-        //        "WHERE account_id = @accountId AND balance >= @amount";
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@amount", amount);
-        //            cmd.Parameters.AddWithValue("@account_id", accountId);
-
-        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
-
-        //            if (numberOfRowsAffected == 0)
-        //            {
-        //                throw new DaoException("Zero rows affected, expected at least one");
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
-        //    }
-        //}
-
-        //// account stuff?
-        //public bool ReceiveMoney(int accountId, decimal amount)
-        //{
-        //    string sql = "UPDATE account SET balance = balance + @amount " +
-        //        "WHERE account_id = @accountId";
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@amount", amount);
-        //            cmd.Parameters.AddWithValue("@account_id", accountId);
-
-        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
-
-        //            if (numberOfRowsAffected == 0)
-        //            {
-        //                throw new DaoException("Zero rows affected, expected at least one");
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
-        //    }
-        //}
-
-        //public Account UpdateBalance(int accountId, decimal balance)
-        //{
-        //    Account account = null;
-        //    string sql = "UPDATE account SET balance = @balance " +
-        //        "WHERE account_id = @accountId";
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@balance", balance);
-        //            cmd.Parameters.AddWithValue("@account_id", accountId);
-
-        //            int numberOfRowsAffected = cmd.ExecuteNonQuery();
-
-        //            if (numberOfRowsAffected == 0)
-        //            {
-        //                throw new DaoException("Zero rows affected, expected at least one");
-        //            }
-
-        //        }
-        //        account = GetAccountById(account_id);
-
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new DaoException("SQL exception occured on TransferMoney", ex);
-        //    }
-        //}
-
 
         private Transfer MapRowToTransfer(SqlDataReader reader)
         {

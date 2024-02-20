@@ -50,6 +50,8 @@ namespace TenmoClient.Services
             Console.ReadKey();
         }
 
+        
+
         /// <summary>
         /// Display a prompt and read an integer from the keyboard.
         /// </summary>

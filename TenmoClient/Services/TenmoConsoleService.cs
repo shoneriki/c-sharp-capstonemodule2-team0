@@ -54,8 +54,6 @@ namespace TenmoClient.Services
             return loginUser;
         }
 
-        //TODO: figure out how to compare the ID's and then when everything is complete add all the information into the transfer object to return and add that object into the  
-
 
         // Add application-specific UI methods here...
         public void PromptforTransfer(int menuSelection, TenmoApiService tenmo)
@@ -83,19 +81,24 @@ namespace TenmoClient.Services
                         Console.WriteLine("Insufficient funds\n");
                         Pause();
                     }
-                    Transfer transfer = new Transfer
-                    {
-                        TransferTypeId = 2,
-                        TransferStatusId = 2,
-                        AccountTo = tenmo.GetAccountByUserId(userId).AccountId,
-                        AccountFrom = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
-                        Amount = amountToSend
-                    };
-                    tenmo.CreateTransfer(transfer);
-                    Console.WriteLine("Tranfer request sent!");
-
+                    else 
+                    { 
+                        Transfer transfer = new Transfer
+                        {
+                            TransferTypeId = 2,
+                            TransferStatusId = 2,
+                            AccountFrom = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
+                            AccountTo = tenmo.GetAccountByUserId(userId).AccountId,
+                            Amount = amountToSend
+                        };
+                        tenmo.CreateTransfer(transfer);
+                        int recipientAccount = tenmo.GetAccountByUserId(userId).AccountId;
+                        string recipientUsername = tenmo.GetUserByAccountId(recipientAccount).Username;
+                    
+                        Console.WriteLine($"You have sent {recipientUsername} ${amountToSend}!");
+                    }
                 }
-                
+
 
                 if (menuSelection == 5)
                 {
@@ -111,19 +114,36 @@ namespace TenmoClient.Services
                         Console.WriteLine("Can't request zero or negative amount\n");
                         amountToRequest = PromptForDecimal("Enter amount to send");
                     }
-                    Transfer transfer = new Transfer
-                    {
-                        TransferTypeId = 1,
-                        TransferStatusId = 1,
-                        AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
-                        AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
-                        Amount = amountToRequest
-                        
-                    };
-                    tenmo.CreateTransfer(transfer);
-                    Console.WriteLine("Request was sent!");
-                }
+                    decimal accountBalance = tenmo.GetAccountByUserId(userId).Balance;
 
+                    if (amountToRequest > accountBalance)
+                    {
+                        Transfer alreadyRejectedTransfer = new Transfer
+                        {
+                            TransferTypeId = 1,
+                            TransferStatusId = 3,
+                            AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
+                            AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
+                            Amount = amountToRequest
+                        };
+                        tenmo.CreateTransfer(alreadyRejectedTransfer);
+                    }
+                    else
+                    {
+                        Transfer transfer = new Transfer
+                        {
+                            TransferTypeId = 1,
+                            TransferStatusId = 1,
+                            AccountFrom = tenmo.GetAccountByUserId(userId).AccountId,
+                            AccountTo = tenmo.GetAccountByUserId(tenmo.UserId).AccountId,
+                            Amount = amountToRequest
+
+                        };
+                        tenmo.CreateTransfer(transfer);
+                    }
+                    Console.WriteLine("Request was sent!");
+                    Pause();
+                }
             }
             catch (Exception)
             {
@@ -134,31 +154,25 @@ namespace TenmoClient.Services
 
         }
 
-        //publi
-
-        //TODO: add logic for transfer. remember to add Api request for both. when finished add into app.
-        //public Transfer PromptForSendTransfer(int choice, TenmoApiService tenmo)
-        //{
-        //    tenmo.GetUserId
-        //    Transfer holder = new Transfer();
-        //    return holder;
-        //}
-
         public void PromptToViewPendingTransfers(TenmoApiService tenmo)
         {
             List<Transfer> transfers = tenmo.GetTransfersByUserId(tenmo.UserId);
+
+            // tenmo.GetPendingTransfersByUserid(tenmo.userId);
             Account loginUser = tenmo.GetAccountByUserId(tenmo.UserId);
+
 
             foreach (Transfer element in transfers)
             {
                 //This goes through the list and only pulls pending request and only pulls them when the request is sent to the user.
-                if (element.TransferStatusId == 1 && element.AccountFrom == loginUser.AccountId)
+                if (element.TransferStatusId == 1 && element.AccountFrom == loginUser.AccountId )
                 {
                     //this prints the usernames.
                     string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
 
                     Console.WriteLine($"{element.TransferId} / {username} has requested ${element.Amount} from you");
                 }
+                
             }
             foreach (Transfer element in transfers)
             {
@@ -184,18 +198,43 @@ namespace TenmoClient.Services
                         int userInput = PromptForInteger("Select (1)Approve / (2)Reject / (0)Cancel");
                         if (userInput == 1)
                         {
-							Transfer transferToUpdate = tenmo.GetTransferDetails(element.TransferId);
-                            transferToUpdate.TransferStatusId = 2;
-                            transferToUpdate.TransferTypeId = 2;
+                            if (element.Amount > loginUser.Balance)
+                            {
+                                Console.WriteLine("Insufficient Funds");
+                                Pause();
+                            }
+                            else 
+                            { 
+							    Transfer transferToUpdate = tenmo.GetTransferDetails(element.TransferId);
+                                transferToUpdate.TransferStatusId = 2;
+                                transferToUpdate.TransferTypeId = 2;
+                                tenmo.UpdateTransfer(transferToUpdate);
+                                
+                                int recipientAccountId = transferToUpdate.AccountTo;
+                                string userNameThatRequested = tenmo.GetUserByAccountId(recipientAccountId).Username;
+
+                                Console.WriteLine($"You have sent {userNameThatRequested} ${transferToUpdate.Amount}");
+                            }
+                        }
+                        else if (userInput == 2)
+                        {
+                            Transfer transferToUpdate = tenmo.GetTransferDetails(element.TransferId);
+                            transferToUpdate.TransferStatusId = 3;
                             tenmo.UpdateTransfer(transferToUpdate);
+
+							int recipientAccountId = transferToUpdate.AccountTo;
+							string userNameThatRequested = tenmo.GetUserByAccountId(recipientAccountId).Username;
+
+							Console.WriteLine($"You have rejected sending {userNameThatRequested} ${transferToUpdate.Amount}");
+                            
 						}
 
                     }
                 }
 
             }
-            Pause();
-        }
+			Pause();
+		}
 
         // TODO: create prompts for viewing past transfers and pending transfer
         // TODO: Prompt to accept, deny, or wait on transfer request
@@ -220,13 +259,15 @@ namespace TenmoClient.Services
 			foreach (Transfer element in transfers)
 			{
 
-				if ((element.TransferStatusId == 2  || element.TransferStatusId == 3) && element.AccountFrom == loginUser.AccountId)
+				if ((element.TransferStatusId == 2  || element.TransferStatusId == 3) && (element.AccountFrom == loginUser.AccountId || element.AccountTo == loginUser.AccountId))
 				{
-					string username = tenmo.GetUserByAccountId(element.AccountTo).Username;
+					string username = tenmo.GetUserByAccountId(element.AccountFrom).Username;
+                    string username2 = tenmo.GetUserByAccountId(element.AccountTo).Username;
+                    
 
-                    string status = element.TransferStatusId == 2 ? "Sent" : "Rejected from sending";
+                    string status = element.TransferStatusId == 2 ? "Sent" : "Did not send";
 
-                    Console.WriteLine($"{element.TransferId} / {username} / {status} ${element.Amount}");
+                    Console.WriteLine($"{element.TransferId} / {username} / {status} ${element.Amount} to {username2}");
 
                 }
 

@@ -25,10 +25,6 @@ namespace TenmoServer.Controllers
         [HttpPost()]
         public ActionResult<Transfer> CreatingTransfer(Transfer transfer)
         {
-            //Account accountFrom = accountDao.GetAccountByUserId(transfer.AccountFrom);
-            //Account accountTo = accountDao.GetAccountByUserId(transfer.AccountTo);
-            //transfer.AccountFrom = accountFrom.AccountId;
-            //transfer.AccountTo = accountTo.AccountId;
             Transfer added = transferDao.CreateTransfer(transfer);
             Transfer newlyAddedTransfer = transferDao.GetTransferById(added.TransferId);
             return Created($"/transfer/{newlyAddedTransfer.TransferId}", newlyAddedTransfer);
@@ -38,7 +34,7 @@ namespace TenmoServer.Controllers
         public ActionResult<Transfer> Gettransfer(int transferId)
         {
             Transfer transfer = transferDao.GetTransferById(transferId);
-            if(transfer != null)
+            if (transfer != null)
             {
                 return transfer;
             }
@@ -58,6 +54,7 @@ namespace TenmoServer.Controllers
             }
             return transferDao.GetTransfersOfUser(user_id);
         }
+
 
         [HttpPut("{transferId}")]
         public ActionResult<Transfer> UpdatesTransfer(Transfer transfer)
